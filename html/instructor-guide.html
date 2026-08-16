@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>instructor-guide.md · 讲师课程大纲</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } };
+  </script>
+  <style>
+    :root { --bg: 0 0% 100%; --fg: 222.2 84% 4.9%; --card: 0 0% 100%; --border: 214.3 31.8% 91.4%; --muted: 210 40% 96.1%; }
+    .dark { --bg: 222.2 84% 4.9%; --fg: 210 40% 98%; --card: 222.2 84% 6.5%; --border: 217.2 32.6% 17.5%; --muted: 217.2 32.6% 12.5%; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: hsl(var(--bg)); color: hsl(var(--fg)); }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    code { font-family: 'JetBrains Mono', monospace; }
+    h1, h2, h3 { scroll-margin-top: 5rem; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; }
+    thead { background: hsl(var(--muted)); }
+    tbody tr:hover { background: hsl(var(--muted)); }
+  </style>
+</head>
+<body>
+  <div class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur" style="height:56px; display:flex; align-items:center;">
+    <div class="max-w-4xl mx-auto px-6 w-full flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          返回教学门户
+        </a>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm font-mono opacity-50">instructor-guide.md · 讲师课程大纲</span>
+      </div>
+      <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('md-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm hover:opacity-80 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-10" x-data="{ dark: localStorage.getItem('md-theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="document.documentElement.classList.toggle('dark', dark)">
+    <div class="prose prose-slate dark:prose-invert max-w-none">
+      <h1 id="讲师指南业务助手智能体培训" class="font-bold mb-3 mt-6 text-3xl">讲师指南 · 业务助手智能体培训</h1>
+
+<h2 id="课程目标" class="font-bold mb-3 mt-6 text-2xl">课程目标</h2>
+
+<p class="mb-3 text-sm leading-relaxed">让零代码基础的学员,在 1-2 天内能用 Codex 做出一个可用的业务网页应用,覆盖 4 种典型场景(A/B/C/D)。</p>
+
+<p class="mb-3 text-sm leading-relaxed">学员交付物:</p>
+
+<li class="ml-4 mb-1">1 份 PRD 文档(版本号 ≥ v0.1)</li>
+<li class="ml-4 mb-1">1 个单文件 HTML Demo(双击即开,CRUD 可用)</li>
+<li class="ml-4 mb-1">1 份 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">checklist-<产品名>.md</code>(全勾)</li>
+<li class="ml-4 mb-1">1 份 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">CHANGELOG.md</code>(记录所有改动)</li>
+
+<h2 id="课时建议" class="font-bold mb-3 mt-6 text-2xl">课时建议</h2>
+
+
+<p class="mb-3 text-sm leading-relaxed">合计:5 小时(1 天) 升级版:加 1 天做「跨部门联合 demo」(可选)</p>
+
+<h2 id="课前准备" class="font-bold mb-3 mt-6 text-2xl">课前准备</h2>
+
+<p class="mb-3 text-sm leading-relaxed">讲师侧:</p>
+
+<li class="ml-4 mb-1">[ ] 自己跑一遍 walkthrough,确保熟悉 4 场景</li>
+<li class="ml-4 mb-1">[ ] 准备 3-5 个真实业务场景(自己行业的例子)</li>
+<li class="ml-4 mb-1">[ ] 把 3 个参考 demo 在自己机器上跑通,准备好截图/录屏(备用)</li>
+<li class="ml-4 mb-1">[ ] 打印评分量表(给学员每人一份)</li>
+
+<p class="mb-3 text-sm leading-relaxed">学员侧:</p>
+
+<li class="ml-4 mb-1">[ ] 装好 Codex(桌面版 / 浏览器扩展)</li>
+<li class="ml-4 mb-1">[ ] 拿到 Skill 包(目录或 zip)</li>
+<li class="ml-4 mb-1">[ ] 跑 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">python work/smoke_test.py</code>,期望 78/78</li>
+<li class="ml-4 mb-1">[ ] 选一个真实业务,自己想好 3 轮对话内容</li>
+
+<h2 id="讲解要点" class="font-bold mb-3 mt-6 text-2xl">讲解要点</h2>
+
+<h3 id="第一段skill是什么15分钟" class="font-bold mb-3 mt-6 text-xl">第一段:Skill 是什么(15 分钟)</h3>
+
+<li class="ml-4 mb-1">Skill = 给 Codex 读的「说明书」,让 Codex 知道「你被启用后该怎么干活」</li>
+<li class="ml-4 mb-1">这个 Skill 的工作流:4 阶段 + 4 场景</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">学员的角色:不是程序员,是「业务产品经理」</strong></li>
+<li class="ml-4 mb-1">强调:不需要懂 HTML / CSS / JS</li>
+
+<h3 id="第二段演示20分钟" class="font-bold mb-3 mt-6 text-xl">第二段:演示(20 分钟)</h3>
+
+<li class="ml-4 mb-1">用 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">walkthrough-hr-recruitment.md</code> 投影</li>
+<li class="ml-4 mb-1">重点演示:</li>
+<li class="ml-4 mb-1">30 秒场景判断</li>
+<li class="ml-4 mb-1">三件套(PRD / 代码 / CHANGELOG)一起改</li>
+<li class="ml-4 mb-1">场景 C 的冻结老版本 + 迁移函数</li>
+<li class="ml-4 mb-1">边演示边让学员看 checklist 怎么用</li>
+
+<h3 id="第三段学员实战60-90分钟" class="font-bold mb-3 mt-6 text-xl">第三段:学员实战(60-90 分钟)</h3>
+
+<li class="ml-4 mb-1">每人选一个真实业务(不能是 HR,跟讲师业务不同)</li>
+<li class="ml-4 mb-1">复制 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">student-checklist.md</code> → <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/checklist-<产品名>.md</code></li>
+<li class="ml-4 mb-1">边做边勾,卡了就举手</li>
+<li class="ml-4 mb-1">讲师每 15 分钟巡场一次,问「卡在哪了」</li>
+
+<h3 id="第四段复盘评分30分钟" class="font-bold mb-3 mt-6 text-xl">第四段:复盘 + 评分(30 分钟)</h3>
+
+<li class="ml-4 mb-1">抽 2-3 个学员 5 分钟演示</li>
+<li class="ml-4 mb-1">讲师用 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">instructor-rubric.md</code> 现场打分</li>
+<li class="ml-4 mb-1">学员也用同一份量表互评,看评分标准是否一致</li>
+
+<h2 id="常见学员错误讲师提前知道怎么救场" class="font-bold mb-3 mt-6 text-2xl">常见学员错误(讲师提前知道怎么救场)</h2>
+
+
+<h2 id="评分" class="font-bold mb-3 mt-6 text-2xl">评分</h2>
+
+<p class="mb-3 text-sm leading-relaxed">用 <a href="instructor-rubric.md" class="text-blue-500 hover:underline">instructor-rubric.md</a> 评分:</p>
+
+<li class="ml-4 mb-1">90+:优秀,可直接交付生产</li>
+<li class="ml-4 mb-1">75-89:良好,需要少量打磨</li>
+<li class="ml-4 mb-1">60-74:合格,需要中等打磨</li>
+<li class="ml-4 mb-1">< 60:不合格,需要返工</li>
+
+<p class="mb-3 text-sm leading-relaxed">讲师不只看最终交付物,<strong class="font-semibold">要看 checklist 过程</strong>——一个 60 分交付物 + 完整 checklist,比 90 分交付物 + 空白 checklist 学得多。</p>
+
+<h2 id="课后动作" class="font-bold mb-3 mt-6 text-2xl">课后动作</h2>
+
+<li class="ml-4 mb-1">[ ] 收集所有学员的 checklist,统计平均完成度</li>
+<li class="ml-4 mb-1">[ ] 选 3-5 个优秀 demo,作为下期班的范本(脱敏后)</li>
+<li class="ml-4 mb-1">[ ] 收集学员反馈,改进 Skill 或课程设计</li>
+<li class="ml-4 mb-1">[ ] 把 1-2 个失败案例(脱敏)加到「常见学员错误」表里</li>
+
+<h2 id="培训变体" class="font-bold mb-3 mt-6 text-2xl">培训变体</h2>
+
+
+<h2 id="讲师faq" class="font-bold mb-3 mt-6 text-2xl">讲师 FAQ</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:学员电脑装 Python 失败怎么办?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:本 Skill 的 smoke_test 用 Python(Codex 自带)。如果学员 Python 没装,跳过 smoke_test 也能用 Skill——但讲师没法验证安装。备选:让学员跑 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">node -v</code> 看 node 装了没,作为粗略验证。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:学员的 Codex 版本太老,不识别 Skill 怎么办?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:让学员更新 Codex 到最新版本。Skill 触发词可能不兼容老版本。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:学员选的「业务」太复杂,做不完怎么办?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:让他砍需求。一个 1 天培训能做完的「业务」必须有:</p>
+
+<li class="ml-4 mb-1">1-3 个实体(比如「候选人」+「面试评价」)</li>
+<li class="ml-4 mb-1">单一用户角色</li>
+<li class="ml-4 mb-1">简单流程(2-3 步)</li>
+<li class="ml-4 mb-1">不要实时多人协作</li>
+<li class="ml-4 mb-1">不要复杂权限</li>
+
+<p class="mb-3 text-sm leading-relaxed">如果学员选了「要做个全公司 OA」,劝他先做其中一个模块。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:学员中文打字很慢,1 天做不完怎么办?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:可以用「实时语音转文字」工具(飞书妙记 / 通义听悟),或者让学员 2 人一组 1 个 demo(其中 1 人负责打字,1 人负责业务思考)。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:学员的 demo 在手机上打不开?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:Skill 默认做移动端适配。如果学员做出来移动端不能用,讲师要现场演示「开发者工具 → 切到 iPhone 模式 → 看看哪里出问题」,让学员自己修。</p>
+
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 dark:border-slate-700 mt-12">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center text-sm">
+      <div><a href="student-checklist.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>student-checklist.md · 作业 checklist</a></div><div><a href="instructor-rubric.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600">instructor-rubric.md · 评分量表<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </div>
+  </div>
+
+  <script>
+    try {
+      const t = localStorage.getItem('md-theme');
+      if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>
