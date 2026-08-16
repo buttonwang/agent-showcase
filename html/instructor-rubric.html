@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>instructor-rubric.md · 评分量表</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } };
+  </script>
+  <style>
+    :root { --bg: 0 0% 100%; --fg: 222.2 84% 4.9%; --card: 0 0% 100%; --border: 214.3 31.8% 91.4%; --muted: 210 40% 96.1%; }
+    .dark { --bg: 222.2 84% 4.9%; --fg: 210 40% 98%; --card: 222.2 84% 6.5%; --border: 217.2 32.6% 17.5%; --muted: 217.2 32.6% 12.5%; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: hsl(var(--bg)); color: hsl(var(--fg)); }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    code { font-family: 'JetBrains Mono', monospace; }
+    h1, h2, h3 { scroll-margin-top: 5rem; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; }
+    thead { background: hsl(var(--muted)); }
+    tbody tr:hover { background: hsl(var(--muted)); }
+  </style>
+</head>
+<body>
+  <div class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur" style="height:56px; display:flex; align-items:center;">
+    <div class="max-w-4xl mx-auto px-6 w-full flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          返回教学门户
+        </a>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm font-mono opacity-50">instructor-rubric.md · 评分量表</span>
+      </div>
+      <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('md-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm hover:opacity-80 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-10" x-data="{ dark: localStorage.getItem('md-theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="document.documentElement.classList.toggle('dark', dark)">
+    <div class="prose prose-slate dark:prose-invert max-w-none">
+      <h1 id="讲师评分量表100分制" class="font-bold mb-3 mt-6 text-3xl">讲师评分量表 · 100 分制</h1>
+
+<p class="mb-3 text-sm leading-relaxed">学员姓名:________________ 产品名:________________ 业务领域:________________ 评分日期:________________ 讲师姓名:________________</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="一完成度70分" class="font-bold mb-3 mt-6 text-2xl">一、完成度(70 分)</h2>
+
+<p class="mb-3 text-sm leading-relaxed">每项 10 分,根据 checklist 自评 + 讲师复评给出。</p>
+
+
+<p class="mb-3 text-sm leading-relaxed">评分细则(每项 10 分):</p>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">9-10 分</strong>:完全做到,自查清单全勾,讲师复评无补充</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">7-8 分</strong>:基本做到,自查清单 1-2 项没勾但有合理解释</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">5-6 分</strong>:做了但有明显遗漏(比如没写 CHANGELOG)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">3-4 分</strong>:做了但流程不规范(比如没等用户确认)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">0-2 分</strong>:基本没做或完全错误</li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="二质量分30分" class="font-bold mb-3 mt-6 text-2xl">二、质量分(30 分)</h2>
+
+<p class="mb-3 text-sm leading-relaxed">每项 5 分。</p>
+
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="三加分项每项3最多10" class="font-bold mb-3 mt-6 text-2xl">三、加分项(每项 +3,最多 +10)</h2>
+
+<li class="ml-4 mb-1">[ ] 全程用 lucide 图标,零 emoji (+3)</li>
+<li class="ml-4 mb-1">[ ] 移动端能看,适配 375px (+3)</li>
+<li class="ml-4 mb-1">[ ] 多个模块联动正确(看板拖拽到详情页 / 表单选择联动等)(+3)</li>
+<li class="ml-4 mb-1">[ ] PRD 写得特别清楚,字段约束 / 业务规则写得很细(+3)</li>
+<li class="ml-4 mb-1">[ ] 给同事演示了 5 分钟,对方能独立上手(+3)</li>
+<li class="ml-4 mb-1">[ ] CHANGELOG 写得详细到能回放每次改动(+3)</li>
+<li class="ml-4 mb-1">[ ] 自己加了 smoke_test 没覆盖的检查项(+3)</li>
+
+<p class="mb-3 text-sm leading-relaxed">加分小计:____ (最多 +10)</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="四扣分项每项-5" class="font-bold mb-3 mt-6 text-2xl">四、扣分项(每项 -5)</h2>
+
+<p class="mb-3 text-sm leading-relaxed">讲师在学员交付物里发现以下任一项,直接扣分:</p>
+
+<li class="ml-4 mb-1">[ ] PRD 写到对话里,没写文件(-5)</li>
+<li class="ml-4 mb-1">[ ] PRD 写完没等用户确认就生成 Demo(-5)</li>
+<li class="ml-4 mb-1">[ ] CRUD 是空架子(按钮在,提交没反应)(-10)</li>
+<li class="ml-4 mb-1">[ ] 改了字段没升 PRD 版本号(-5)</li>
+<li class="ml-4 mb-1">[ ] 改了字段没写 CHANGELOG(-5)</li>
+<li class="ml-4 mb-1">[ ] 改了字段没做数据兼容,老数据崩了(-10)</li>
+<li class="ml-4 mb-1">[ ] 场景 C 没冻结老版本,出问题回不去(-5)</li>
+<li class="ml-4 mb-1">[ ] 场景 C 没写迁移函数,数据丢了(-10)</li>
+<li class="ml-4 mb-1">[ ] 主导航放右侧(-5)</li>
+<li class="ml-4 mb-1">[ ] 视觉用了 emoji 当图标(-3)</li>
+<li class="ml-4 mb-1">[ ] 用了没在 safelist 里的动态类名,导致样式没生效(-5)</li>
+<li class="ml-4 mb-1">[ ] 没做移动端适配(-3)</li>
+<li class="ml-4 mb-1">[ ] localStorage 没做版本号后缀,升级时数据冲突(-5)</li>
+
+<p class="mb-3 text-sm leading-relaxed">扣分小计:____</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="五总分" class="font-bold mb-3 mt-6 text-2xl">五、总分</h2>
+
+<p class="mb-3 text-sm leading-relaxed">完成度 + 质量分 + 加分 - 扣分 = <strong class="font-semibold">____ / 100</strong></p>
+
+<h2 id="六等级" class="font-bold mb-3 mt-6 text-2xl">六、等级</h2>
+
+<li class="ml-4 mb-1">90+:优秀,可直接交付生产</li>
+<li class="ml-4 mb-1">75-89:良好,需要少量打磨</li>
+<li class="ml-4 mb-1">60-74:合格,需要中等打磨</li>
+<li class="ml-4 mb-1">< 60:不合格,需要返工</li>
+
+<p class="mb-3 text-sm leading-relaxed">学员最终等级:________</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="七讲师评语3句话" class="font-bold mb-3 mt-6 text-2xl">七、讲师评语(3 句话)</h2>
+
+<p class="mb-3 text-sm leading-relaxed">做得好的:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">需要改进的:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">下一步建议:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="八给学员的3条具体改进建议" class="font-bold mb-3 mt-6 text-2xl">八、给学员的 3 条具体改进建议</h2>
+
+<li class="ml-4 mb-1"></li>
+<li class="ml-4 mb-1"></li>
+<li class="ml-4 mb-1"></li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="九讲师签名" class="font-bold mb-3 mt-6 text-2xl">九、讲师签名</h2>
+
+<p class="mb-3 text-sm leading-relaxed">讲师签字:________ 日期:________</p>
+
+<p class="mb-3 text-sm leading-relaxed">学员确认收到评分:________ 日期:________</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="附录评分时的红牌项" class="font-bold mb-3 mt-6 text-2xl">附录:评分时的「红牌」项</h2>
+
+<p class="mb-3 text-sm leading-relaxed">以下任一项直接判「不合格」,无论其他做得多好:</p>
+
+<li class="ml-4 mb-1">CRUD 完全是空架子(整个 demo 不能用)</li>
+<li class="ml-4 mb-1">PRD 完全是空架子(只有一个标题)</li>
+<li class="ml-4 mb-1">数据丢失且无法恢复(没做迁移 / 没备份)</li>
+<li class="ml-4 mb-1">主导航放右侧(历史教训)</li>
+<li class="ml-4 mb-1">用了大量 emoji 当图标(违反设计规范)</li>
+<li class="ml-4 mb-1">没有 localStorage 持久化(刷新数据全丢)</li>
+
+<p class="mb-3 text-sm leading-relaxed">讲师可在评分时直接用「红牌」一票否决,而不必一项项扣分。</p>
+
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 dark:border-slate-700 mt-12">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center text-sm">
+      <div><a href="instructor-guide.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>instructor-guide.md · 讲师课程大纲</a></div><div><span class="opacity-30">已是最后一篇</span></div>
+    </div>
+  </div>
+
+  <script>
+    try {
+      const t = localStorage.getItem('md-theme');
+      if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>
