@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>walkthrough-hr-recruitment.md · 完整演练</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } };
+  </script>
+  <style>
+    :root { --bg: 0 0% 100%; --fg: 222.2 84% 4.9%; --card: 0 0% 100%; --border: 214.3 31.8% 91.4%; --muted: 210 40% 96.1%; }
+    .dark { --bg: 222.2 84% 4.9%; --fg: 210 40% 98%; --card: 222.2 84% 6.5%; --border: 217.2 32.6% 17.5%; --muted: 217.2 32.6% 12.5%; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: hsl(var(--bg)); color: hsl(var(--fg)); }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    code { font-family: 'JetBrains Mono', monospace; }
+    h1, h2, h3 { scroll-margin-top: 5rem; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; }
+    thead { background: hsl(var(--muted)); }
+    tbody tr:hover { background: hsl(var(--muted)); }
+  </style>
+</head>
+<body>
+  <div class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur" style="height:56px; display:flex; align-items:center;">
+    <div class="max-w-4xl mx-auto px-6 w-full flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          返回教学门户
+        </a>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm font-mono opacity-50">walkthrough-hr-recruitment.md · 完整演练</span>
+      </div>
+      <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('md-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm hover:opacity-80 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-10" x-data="{ dark: localStorage.getItem('md-theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="document.documentElement.classList.toggle('dark', dark)">
+    <div class="prose prose-slate dark:prose-invert max-w-none">
+      <h1 id="端到端演练hr招聘后台4场景全跑通" class="font-bold mb-3 mt-6 text-3xl">端到端演练:HR 招聘后台(4 场景全跑通)</h1>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">这是给学员看的完整演练 demo。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">角色:小王,某互联网公司 HR 专员,Excel 管候选人管到崩溃,想做个内部工具。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">目标:跟业务助手智能体(本 Skill)从 0 到 1 把招聘后台做出来,并经历 4 种典型往返。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">读这份 demo 之前,请先看 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">examples/README.md</code> 入门。</blockquote>
+
+<h2 id="0这次演练的剧本" class="font-bold mb-3 mt-6 text-2xl">0. 这次演练的「剧本」</h2>
+
+
+<p class="mb-3 text-sm leading-relaxed">下面所有「学员说」都是小王原话,所有「Skill 说」都是 Skill 应该输出的话(学员看到的)。</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="阶段一需求发现3轮对话" class="font-bold mb-3 mt-6 text-2xl">阶段一:需求发现(3 轮对话)</h2>
+
+<h3 id="第1轮角色痛点" class="font-bold mb-3 mt-6 text-xl">第 1 轮:角色 + 痛点</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">我是 HR 专员,平时用 Excel 管候选人,候选人多了根本管不过来,经常漏掉简历、漏约面试,想搞个工具。</blockquote>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">收到。听起来你现在的痛点是「候选人多、流程乱、容易漏」。我接着问两个问题,问完就给你出产品文档。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">1. 这个工具主要给你自己用,还是 HR 团队几个人一起用?</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">2. 一个候选人从你收到简历到入职,中间大致要走几步?每一步你大概做什么?</blockquote>
+
+<h3 id="第2轮核心功能字段" class="font-bold mb-3 mt-6 text-xl">第 2 轮:核心功能 + 字段</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">主要是给我自己用,偶尔组长会看。流程是这样的:业务部门先发「招聘需求」(岗位、人数、要求),我在招聘网站收简历,把候选人录入,然后 HR 面试 → 业务面试 → 管理层终面 → 发 offer → 入职。每轮面试要记评价。</blockquote>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">明白了。最后一个问题,我想确认下:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">1. 除了「候选人主表」,你还需要单独维护「招聘需求」和「面试评价」吗?(我建议分开,更清晰)</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">2. 候选人要记录哪些字段?我先猜几个你看够不够:姓名、应聘岗位、来源渠道、当前阶段、最近联系时间、备注。</blockquote>
+
+<h3 id="第3轮风格字段确认" class="font-bold mb-3 mt-6 text-xl">第 3 轮:风格 + 字段确认</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">字段差不多,再加一个「期望薪资」吧。需求和面试评价分开放,这样我能从需求看进度。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">风格不用太花哨,简洁能用就行,像 Vercel 那种。</blockquote>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">好的,我现在去写产品文档,会写到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-hr-recruitment-v0.1.md</code>,写完我告诉你。</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">阶段一执行清单(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">SKILL.md</code> 第 3 节)</strong></p>
+
+<li class="ml-4 mb-1">[x] 第一轮:问角色 + 痛点</li>
+<li class="ml-4 mb-1">[x] 第二轮:问核心功能 + 流程</li>
+<li class="ml-4 mb-1">[x] 第三轮:问字段 + 风格</li>
+<li class="ml-4 mb-1">[x] 告诉用户接下来要出 PRD</li>
+<li class="ml-4 mb-1">[x] 没有一次问 10 个问题把用户淹没</li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="阶段二prd自动生成v01" class="font-bold mb-3 mt-6 text-2xl">阶段二:PRD 自动生成 v0.1</h2>
+
+<p class="mb-3 text-sm leading-relaxed">Skill 写出 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-hr-recruitment-v0.1.md</code>,关键内容(节选):</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+---
+产品名: HR 招聘后台
+版本: v0.1
+最后更新: 2026-06-09
+---
+
+## 1. 产品定位
+
+为 HR 专员提供一个集中管理招聘需求、候选人、面试评价的内部工具,
+替代当前用 Excel 管理候选人时容易漏掉简历、漏约面试的痛点。
+
+## 2. 目标用户
+
+- 主要:HR 专员(自己用)
+- 次要:HR 组长(只看统计和进度)
+
+## 3. 使用场景
+
+- 每天:查看候选人进度、安排面试、记录面试评价
+- 每周:汇总招聘需求完成情况、统计漏掉的简历
+
+## 4. 核心功能列表
+
+- [x] P0 招聘需求管理(发布、编辑、关闭)
+- [x] P0 候选人管理(录入、编辑、状态推进、删除)
+- [x] P0 面试评价记录(HR 面试 / 业务面试 / 管理层终面)
+- [x] P0 仪表盘(招聘需求完成度、漏掉的简历提醒)
+- [ ] P1 候选人搜索、按岗位筛选
+- [ ] P1 导出候选人 Excel
+
+## 5. 字段定义
+
+### 5.1 招聘需求
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| 标题 | 文本 | 是 | 例如「高级前端工程师」 |
+| 部门 | 文本 | 是 | 业务部门 |
+| 人数 | 数字 | 是 | 招聘人数 |
+| 状态 | 枚举 | 是 | 开放/已满/已关闭 |
+
+### 5.2 候选人
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| 姓名 | 文本 | 是 |  |
+| 应聘岗位 | 关联 | 是 | 关联到招聘需求 |
+| 来源渠道 | 枚举 | 否 | BOSS/拉勾/猎聘/内推 |
+| 当前阶段 | 枚举 | 是 | 简历筛选/HR 面试/业务面试/管理层终面/已发 offer/已入职/已淘汰 |
+| 最近联系时间 | 日期 | 否 |  |
+| 期望薪资 | 数字 | 否 | 单位:千元 |
+| 备注 | 文本 | 否 |  |
+
+### 5.3 面试评价
+
+| 字段 | 类型 | 必填 | 说明 |
+| --- | --- | --- | --- |
+| 候选人 | 关联 | 是 | 关联到候选人 |
+| 面试轮次 | 枚举 | 是 | HR 面试/业务面试/管理层终面 |
+| 面试官 | 文本 | 是 |  |
+| 评价 | 文本 | 是 |  |
+| 日期 | 日期 | 是 |  |
+
+## 6. 视觉风格
+
+- 风格:Vercel / shadcn UI 风格,简洁清晰
+- 左侧主导航,顶部 16px 固定栏
+- 浅色 + 深色双主题
+- 5 种状态色(绿/黄/红/蓝/灰)
+
+## 7. 业务规则
+
+- 候选人必须依次经过 HR 面试 → 业务面试 → 管理层终面 → offer
+- 同一候选人同一轮次可以有多次面试评价(允许二面)
+</code></pre>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">PRD 已经写到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-hr-recruitment-v0.1.md</code>。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">请逐项审阅:产品定位、目标用户、核心功能、字段定义、视觉风格、业务规则。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">有问题直接说「修改 XX 部分」,没问题就说「OK 开始生成 Demo」。</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">阶段二执行清单(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">SKILL.md</code> 第 4 节)</strong></p>
+
+<li class="ml-4 mb-1">[x] PRD 写到文件,不写到对话</li>
+<li class="ml-4 mb-1">[x] 包含产品定位/目标用户/使用场景</li>
+<li class="ml-4 mb-1">[x] 包含核心功能列表(按优先级)</li>
+<li class="ml-4 mb-1">[x] 包含字段定义</li>
+<li class="ml-4 mb-1">[x] 包含视觉风格</li>
+<li class="ml-4 mb-1">[x] 等用户确认,没闷头生成 Demo</li>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:OK</blockquote>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="阶段三网页应用自动生成" class="font-bold mb-3 mt-6 text-2xl">阶段三:网页应用自动生成</h2>
+
+<p class="mb-3 text-sm leading-relaxed">Skill 基于 PRD 生成 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-hr-recruitment/index.html</code>(单文件 HTML,55KB 左右),完成后告诉学员:</p>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Demo 已经写到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-hr-recruitment/index.html</code>。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">双击在浏览器打开就能用,数据存在 localStorage,刷新不丢。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">包含 6 个视图:仪表盘 / 招聘需求 / 候选人列表 / 候选人看板 / 面试评价 / 设置。</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed">学员打开 demo,看到左侧导航、浅色主题、能新建招聘需求、能录入候选人、能切换候选人阶段。点击保存按钮后刷新页面,数据还在。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">阶段三执行清单(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">SKILL.md</code> 第 5 节)</strong></p>
+
+<li class="ml-4 mb-1">[x] 单文件 HTML,所有 CSS/JS 内联或 CDN</li>
+<li class="ml-4 mb-1">[x] 主导航在左侧(<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">lg:pl-60</code> + <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300"><aside></code> 固定左侧)</li>
+<li class="ml-4 mb-1">[x] 顶部 16px 固定栏</li>
+<li class="ml-4 mb-1">[x] 浅色/深色双主题</li>
+<li class="ml-4 mb-1">[x] 5 种状态色配对</li>
+<li class="ml-4 mb-1">[x] Tailwind safelist 包含动态状态色类</li>
+<li class="ml-4 mb-1">[x] lucide 图标(零 emoji)</li>
+<li class="ml-4 mb-1">[x] 每个图标按钮带 aria-label</li>
+<li class="ml-4 mb-1">[x] Modal 含 ESC 关闭 + click.outside 关闭</li>
+<li class="ml-4 mb-1">[x] localStorage 持久化(<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">hr-recruitment__data_v1</code>)</li>
+<li class="ml-4 mb-1">[x] 移动端适配 + 抽屉式左侧导航</li>
+<li class="ml-4 mb-1">[x] CRUD 全部真的能用(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/crud-pattern.md</code>)</li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="场景a加一个字段" class="font-bold mb-3 mt-6 text-2xl">场景 A:加一个字段</h2>
+
+<p class="mb-3 text-sm leading-relaxed">学员用了一周 Demo,业务部门反馈「面试官有没有认真面试我们也不知道」,想给每个面试评价加个「面试官评分 1-5」。</p>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:再加一个「面试官评分」字段,1-5 分,放在面试评价里。</blockquote>
+
+<h3 id="a1skill内部判断30秒" class="font-bold mb-3 mt-6 text-xl">A.1 Skill 内部判断(30 秒)</h3>
+
+<p class="mb-3 text-sm leading-relaxed">这是一次典型的「改字段」反馈 → 路由到<strong class="font-semibold">场景 A:用户完善 PRD 后再次生成</strong>。</p>
+
+<h3 id="a2skill准备改动" class="font-bold mb-3 mt-6 text-xl">A.2 Skill 准备改动</h3>
+
+<li class="ml-4 mb-1">PRD 5.3 节「面试评价」字段表追加一行</li>
+<li class="ml-4 mb-1">PRD 顶部版本 v0.1 → v0.2</li>
+<li class="ml-4 mb-1">演示代码的面试评价 Modal 加这个字段 + 列表里展示</li>
+<li class="ml-4 mb-1">CHANGELOG.md 顶部加一段</li>
+<li class="ml-4 mb-1">localStorage 读取处加 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">score ?? null</code> 兜底(老数据没有这个字段不崩)</li>
+
+<h3 id="a3skill先告诉用户要改什么" class="font-bold mb-3 mt-6 text-xl">A.3 Skill 先告诉用户要改什么</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">我准备做 3 处改动:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">1. PRD <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">5.3 面试评价</code> 加一行「面试官评分(数字 1-5,选填)」,版本升到 v0.2</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">2. Demo 的「面试评价」弹窗加这个字段,列表里展示出来</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">3. CHANGELOG.md 加一条 v0.2 记录</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">老数据兼容:没有这个字段的旧评价会显示为「—」。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">确认后我改。</blockquote>
+
+<h3 id="a4学员确认后skill实际写入" class="font-bold mb-3 mt-6 text-xl">A.4 学员确认后,Skill 实际写入</h3>
+
+<p class="mb-3 text-sm leading-relaxed">PRD 5.3 节插入:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+| 面试官评分 | 数字 | 否 | 1-5 分,业务部门可见 |
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">代码关键片段(Alpine.js data + 模板):</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-javascript">
+// data 里加字段
+const defaultEval = { id: ..., 候选人, 面试轮次, 面试官, 评价, 日期, 面试官评分: null };
+
+// 保存时兜底
+saveAll(items.map(x =&gt; ({ ...x, 面试官评分: x.面试官评分 ?? null })));
+
+// 模板展示(用中文「/5」避免引号转义问题)
+&lt;td&gt;
+  &lt;span x-text="item.面试官评分 ? item.面试官评分 + String.fromCharCode(47) + String(5) : String.fromCharCode(0x2014)"&gt;&lt;/span&gt;
+&lt;/td&gt;
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">更直观的写法(单引号转义用 \):</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-javascript">
+// 或者用反引号包字符串,避开单引号转义
+&lt;td&gt;
+  &lt;span x-text="item.面试官评分 ? item.面试官评分 + `/5` : `—`"&gt;&lt;/span&gt;
+&lt;/td&gt;
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">CHANGELOG.md 顶部新增:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+## v0.2 - 2026-06-15 - 新增面试官评分字段
+
+业务反馈:业务部门希望看到面试官对候选人的打分。
+
+### 变更
+
+- 字段:`面试评价.面试官评分`(数字 1-5,选填)
+- PRD:5.3 节,版本 v0.1 → v0.2
+- Demo:面试评价 Modal 加输入框,列表加展示列
+
+### 数据兼容
+
+- 老评价无此字段,读取时显示「—」,不报错
+</code></pre>
+
+<h3 id="a5改完后告诉学员" class="font-bold mb-3 mt-6 text-xl">A.5 改完后告诉学员</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">改完了,这次改了 3 处:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">1. PRD 5.3 加了一行 + 升到 v0.2</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">2. Demo 面试评价 Modal 加了输入框,列表里会展示「X/5」</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">3. CHANGELOG.md 顶部加了一段 v0.2 记录</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">老数据兼容,没有评分的评价显示「—」。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">验证方法:打开 Demo → 面试评价 → 新建一个评价 → 输入 4 → 保存 → 列表里看到「4/5」。</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 A 自检(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code> 第 2 节)</strong></p>
+
+<li class="ml-4 mb-1">[x] 30 秒判断属于场景 A</li>
+<li class="ml-4 mb-1">[x] PRD/代码/CHANGELOG 三件套一起改</li>
+<li class="ml-4 mb-1">[x] 数据兼容(老字段 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">?? null</code>)</li>
+<li class="ml-4 mb-1">[x] 改完告诉用户「改了什么 / 数据兼容 / 怎么验证」</li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="场景b把对话内容合并到prd" class="font-bold mb-3 mt-6 text-2xl">场景 B:把对话内容合并到 PRD</h2>
+
+<p class="mb-3 text-sm leading-relaxed">学员继续用了两周,中间跟 Skill 提过一些零碎业务规则,现在想让 Skill 把这些都正式写进 PRD。</p>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:把咱们之前聊天里说的那些业务规则也写到 PRD 里</blockquote>
+
+<h3 id="b1skill抽取对话事实" class="font-bold mb-3 mt-6 text-xl">B.1 Skill 抽取对话事实</h3>
+
+<p class="mb-3 text-sm leading-relaxed">Skill 回看过去几周的对话,挑出 4 条事实陈述(过滤掉寒暄、确认、疑问):</p>
+
+<li class="ml-4 mb-1">「我们的业务部门希望,候选人通过 HR 面试后,24 小时内必须安排业务面试,否则系统要提醒 HR」</li>
+<li class="ml-4 mb-1">「已淘汰的候选人保留 90 天,90 天后系统自动删除」</li>
+<li class="ml-4 mb-1">「管理层终面必须有 HR 组长参与,业务部门自己不能跳过 HR」</li>
+<li class="ml-4 mb-1">「招聘需求发布超过 60 天没招满,自动标记为暂停」</li>
+
+<h3 id="b2skill去重定位" class="font-bold mb-3 mt-6 text-xl">B.2 Skill 去重 + 定位</h3>
+
+<p class="mb-3 text-sm leading-relaxed">和当前 PRD 比对:</p>
+
+<li class="ml-4 mb-1">事实 1 → 新增,合并到 PRD 第 7 节「业务规则」</li>
+<li class="ml-4 mb-1">事实 2 → 新增,合并到 PRD 第 7 节「业务规则」</li>
+<li class="ml-4 mb-1">事实 3 → 和现有规则「业务部门不能跳过 HR 终面」部分重复,需要补全</li>
+<li class="ml-4 mb-1">事实 4 → 新增,合并到 PRD 第 7 节「业务规则」</li>
+
+<h3 id="b3skill在对话里展示合并草案不打文件" class="font-bold mb-3 mt-6 text-xl">B.3 Skill 在对话里展示合并草案(不打文件)</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">我准备把以下 4 条对话内容合并到 PRD 第 7 节「业务规则」,版本 v0.2 → v0.3:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">1. <strong class="font-semibold">(新)</strong> 候选人通过 HR 面试后 24 小时内必须安排业务面试,系统超期提醒</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">2. <strong class="font-semibold">(新)</strong> 已淘汰候选人保留 90 天,到期自动清理</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">3. <strong class="font-semibold">(补全)</strong> 管理层终面必须有 HR 组长参与,业务部门不可跳过</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">4. <strong class="font-semibold">(新)</strong> 招聘需求发布超过 60 天未招满,自动标记为「暂停」</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">确认后我写入 PRD。</blockquote>
+
+<h3 id="b4学员确认" class="font-bold mb-3 mt-6 text-xl">B.4 学员确认</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:第 3 条改成「必须有 HR 组长在场」,不是「参与」。其他 OK。</blockquote>
+
+<h3 id="b5skill写入打文件" class="font-bold mb-3 mt-6 text-xl">B.5 Skill 写入(打文件)</h3>
+
+<p class="mb-3 text-sm leading-relaxed">PRD 第 7 节追加 4 条 + 版本升到 v0.3:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+## 7. 业务规则
+
+- 候选人必须依次经过 HR 面试 → 业务面试 → 管理层终面 → offer
+- 同一候选人同一轮次可以有多次面试评价(允许二面)
+- **(v0.3 新增)** 候选人通过 HR 面试后 24 小时内必须安排业务面试,系统超期提醒
+- **(v0.3 新增)** 已淘汰候选人保留 90 天,到期自动清理
+- **(v0.3 补全)** 管理层终面必须有 HR 组长在场,业务部门不可跳过
+- **(v0.3 新增)** 招聘需求发布超过 60 天未招满,自动标记为「暂停」
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">CHANGELOG.md 顶部加:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+## v0.3 - 2026-06-22 - 业务规则补充
+
+### 变更
+
+- 合并对话中的 4 条业务规则到 PRD 第 7 节
+- 版本 v0.2 → v0.3
+
+### 下一步
+
+PRD 改完了。要重新生成应用吗?这些规则会落到 Demo 的提醒和自动任务里。
+</code></pre>
+
+<h3 id="b6skill主动询问要不要重生成" class="font-bold mb-3 mt-6 text-xl">B.6 Skill 主动询问要不要重生成</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">PRD 改完了,版本升到 v0.3。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">这 4 条规则里有 3 条涉及 Demo 的逻辑改动(超期提醒、90 天清理、60 天暂停),需要重新生成应用才会生效。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">要我现在重新生成吗?</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 B 自检(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code> 第 3 节)</strong></p>
+
+<li class="ml-4 mb-1">[x] 显式触发「把刚才的也写进 PRD」</li>
+<li class="ml-4 mb-1">[x] 抽对话事实(过滤寒暄/确认/疑问)</li>
+<li class="ml-4 mb-1">[x] 去重 + 定位到对应章节</li>
+<li class="ml-4 mb-1">[x] 给用户看合并草案(不直接打文件)</li>
+<li class="ml-4 mb-1">[x] 用户可以微调草案(第 3 条措辞)</li>
+<li class="ml-4 mb-1">[x] 写入文件 + 升版本 + 写 CHANGELOG</li>
+<li class="ml-4 mb-1">[x] 主动询问要不要重新生成应用</li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="场景cprd重大改动重生成" class="font-bold mb-3 mt-6 text-2xl">场景 C:PRD 重大改动重生成</h2>
+
+<p class="mb-3 text-sm leading-relaxed">一个月后,公司换了招聘流程:HR 面试 → <strong class="font-semibold">笔试</strong> → 业务面试 → 终面。</p>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:流程大改一下,HR 面试和业务面试中间加一个笔试环节,笔试不通过直接淘汰。</blockquote>
+
+<h3 id="c1skill判断30秒" class="font-bold mb-3 mt-6 text-xl">C.1 Skill 判断(30 秒)</h3>
+
+<li class="ml-4 mb-1">影响字段:候选人「当前阶段」枚举 + 面试评价「面试轮次」枚举</li>
+<li class="ml-4 mb-1">影响视图:候选人看板新增一列</li>
+<li class="ml-4 mb-1">影响业务规则:流程变更</li>
+<li class="ml-4 mb-1">影响 localStorage 数据结构:<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">当前阶段</code> 枚举值变化</li>
+
+<p class="mb-3 text-sm leading-relaxed">→ 影响 > 30% 代码 → 路由到<strong class="font-semibold">场景 C:重大改动重生成</strong>。</p>
+
+<h3 id="c2skill先冻结老版本" class="font-bold mb-3 mt-6 text-xl">C.2 Skill 先冻结老版本</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">这次是大改,影响 5 个地方。我建议冻结当前 v0.3 作为 snapshot,然后开 v1.0 整页重写。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">冻结操作:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">- <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-hr-recruitment/</code> → <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-hr-recruitment-v0.3-snapshot-20260708/</code></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">- <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-hr-recruitment-v0.3.md</code> → <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/_archive/prd-hr-recruitment-v0.3.md</code></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">你的老数据(<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">hr-recruitment__data_v1</code>)会通过迁移函数升级,不会丢。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">确认后我开始?</blockquote>
+
+<h3 id="c3学员确认" class="font-bold mb-3 mt-6 text-xl">C.3 学员确认</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:OK</blockquote>
+
+<h3 id="c4skill冻结新prd整页重写" class="font-bold mb-3 mt-6 text-xl">C.4 Skill 冻结 + 新 PRD + 整页重写</h3>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">新 PRD v1.0</strong> 关键差异:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+---
+产品名: HR 招聘后台
+版本: v1.0 (基于 v0.3 重大重构)
+最后更新: 2026-07-08
+---
+
+## 5.2 候选人(变更)
+
+| 当前阶段 | 枚举 | 是 | 简历筛选/HR 面试/**笔试**/业务面试/管理层终面/已发 offer/已入职/已淘汰 |
+
+## 5.3 面试评价(变更)
+
+| 面试轮次 | 枚举 | 是 | HR 面试/**笔试**/业务面试/管理层终面 |
+
+## 7. 业务规则(变更)
+
+- **(v1.0 新增)** 笔试环节,HR 面试通过后必须先笔试,通过后才能进入业务面试
+- **(v1.0 新增)** 笔试不通过直接淘汰,不进入业务面试
+- 其他规则沿用 v0.3
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">数据迁移函数</strong>(在 Demo 启动时执行):</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-javascript">
+function migrateData_v0_v1(oldData) {
+  // 候选人阶段:原「HR 面试」之后,如果是已经过 HR 面试没安排业务面试的,保持原样不动
+  // 新流程只在 v1.0 之后生效,老候选人保留阶段
+  return {
+    ...oldData,
+    version: 2,
+    招聘需求: oldData.招聘需求 || [],
+    候选人: (oldData.候选人 || []).map(c =&gt; ({
+      ...c,
+      // 阶段值不变,看板新列「笔试」先显示为空
+    })),
+    面试评价: oldData.面试评价 || [],
+  };
+}
+
+// 启动时检测版本
+const stored = JSON.parse(localStorage.getItem(HR_KEY) || "null");
+if (stored &amp;&amp; stored.version !== 2) {
+  const migrated = migrateData_v0_v1(stored);
+  // 备份老数据
+  localStorage.setItem("hr-recruitment__backup_v0", JSON.stringify(stored));
+  localStorage.setItem(HR_KEY, JSON.stringify(migrated));
+}
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">CHANGELOG.md 顶部大事记</strong>:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+## v1.0 - 2026-07-08 - 重大重构:加入笔试环节
+
+⚠️ **Breaking**:候选人阶段枚举扩展,数据模型版本 v1 → v2
+自动迁移函数 `migrateData_v0_v1` 启动时执行,老数据自动备份到 `hr-recruitment__backup_v0`
+
+### 主要变化
+
+- [业务] 新增笔试环节,HR 面试 → 笔试 → 业务面试 → 终面
+- [业务] 笔试不通过直接淘汰
+- [技术] 候选人看板新增「笔试」列
+- [数据] `当前阶段` 枚举扩展,新增「笔试」
+- [数据] `面试轮次` 枚举扩展,新增「笔试」
+- [数据] 老数据自动迁移,老阶段值不变
+
+### 回滚方法
+
+如果 v1.0 有问题,把 `outputs/demo-hr-recruitment-v0.3-snapshot-20260708/` 复制回来即可。
+</code></pre>
+
+<h3 id="c5skill写完告诉学员" class="font-bold mb-3 mt-6 text-xl">C.5 Skill 写完告诉学员</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">v1.0 已经写完,整页重写,数据自动迁移。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">这次改了:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">1. 候选人阶段枚举加了「笔试」</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">2. 面试评价枚举加了「笔试」</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">3. 候选人看板新增「笔试」列</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">4. 业务规则加了「笔试不通过直接淘汰」</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">5. 启动时自动迁移老数据,老候选人阶段值保持不变</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">验证方法:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">1. 打开 Demo(刷新一次,触发迁移)</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">2. 找一个 v0.3 时代的候选人,确认他还在,阶段没变</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">3. 在控制台输入 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">localStorage.getItem("hr-recruitment__backup_v0")</code>,能看到老数据备份</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">4. 找一个新候选人推到「笔试」阶段,看板新列应该有他</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 C 自检(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code> 第 4 节)</strong></p>
+
+<li class="ml-4 mb-1">[x] 30 秒判断影响 > 30%,属于场景 C</li>
+<li class="ml-4 mb-1">[x] <strong class="font-semibold">冻结老版本</strong> snapshot 复制到带日期目录</li>
+<li class="ml-4 mb-1">[x] PRD 老版本归档到 _archive</li>
+<li class="ml-4 mb-1">[x] 主版本 +1(v0.3 → v1.0)</li>
+<li class="ml-4 mb-1">[x] 整页重写,不继承老代码</li>
+<li class="ml-4 mb-1">[x] 写迁移函数,老数据自动升级</li>
+<li class="ml-4 mb-1">[x] 迁移失败的数据备份到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">__backup_v0</code></li>
+<li class="ml-4 mb-1">[x] CHANGELOG 顶部大事记 + 标 ⚠️ Breaking</li>
+<li class="ml-4 mb-1">[x] 给回滚方法</li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="场景d小改直接动代码" class="font-bold mb-3 mt-6 text-2xl">场景 D:小改直接动代码</h2>
+
+<p class="mb-3 text-sm leading-relaxed">v1.0 上线第二天,学员觉得首页仪表盘数字太小,想用公司主色。</p>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">学员说:首页仪表盘那几个大数字(在招岗位数、面试安排数、入职人数)调大一点,颜色用我们公司蓝 #1E40AF,字号大两号。</blockquote>
+
+<h3 id="d1skill判断30秒" class="font-bold mb-3 mt-6 text-xl">D.1 Skill 判断(30 秒)</h3>
+
+<li class="ml-4 mb-1">纯视觉调整(字号、颜色)</li>
+<li class="ml-4 mb-1">不改业务字段、不改流程、不改视图结构</li>
+<li class="ml-4 mb-1">→ 路由到<strong class="font-semibold">场景 D:小改直接动代码,跳过 PRD</strong></li>
+
+<h3 id="d2skill直接动代码" class="font-bold mb-3 mt-6 text-xl">D.2 Skill 直接动代码</h3>
+
+<p class="mb-3 text-sm leading-relaxed">找 demo-hr-recruitment/index.html 里仪表盘大数字的 class,把:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-html">
+&lt;div class="text-3xl font-semibold text-slate-900 dark:text-slate-100"&gt;
+  &lt;span x-text="stats.openJobs"&gt;&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">改成:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-html">
+&lt;div class="text-5xl font-bold text-[#1E40AF] dark:text-blue-400"&gt;
+  &lt;span x-text="stats.openJobs"&gt;&lt;/span&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">其他几个数字同样处理。</p>
+
+<p class="mb-3 text-sm leading-relaxed">CHANGELOG.md 顶部加补丁记录(不升版本号):</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-markdown">
+## patch - 2026-07-09 - 仪表盘数字字号调大 + 公司蓝
+
+### 变更
+
+- 仪表盘 4 个大数字:text-3xl → text-5xl
+- 颜色:slate-900 → #1E40AF(亮)/ blue-400(暗)
+- 不改 PRD(纯视觉微调)
+</code></pre>
+
+<h3 id="d3skill改完告诉学员" class="font-bold mb-3 mt-6 text-xl">D.3 Skill 改完告诉学员</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">Skill 说:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">仪表盘改完了,刷新浏览器看看。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">改了:</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">- 4 个大数字字号 text-3xl → text-5xl</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">- 颜色换成 #1E40AF(你们公司蓝),深色模式下用 blue-400</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">PRD 没改(纯视觉),CHANGELOG 加了一条 patch 记录。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"></blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">验证方法:打开 Demo 首页 → 看到仪表盘 4 个大数字变大变蓝 → 切到深色模式 → 数字变成浅蓝。</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 D 自检(对照 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code> 第 5 节)</strong></p>
+
+<li class="ml-4 mb-1">[x] 30 秒判断属于场景 D</li>
+<li class="ml-4 mb-1">[x] 直接改代码,不改 PRD</li>
+<li class="ml-4 mb-1">[x] CHANGELOG 加 patch 记录(不升版本)</li>
+<li class="ml-4 mb-1">[x] 告诉用户「刷新浏览器」</li>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="演练收尾" class="font-bold mb-3 mt-6 text-2xl">演练收尾</h2>
+
+<h3 id="最终交付物" class="font-bold mb-3 mt-6 text-xl">最终交付物</h3>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+outputs/
+├── prd-hr-recruitment-v1.0.md             (当前 PRD)
+├── _archive/
+│   └── prd-hr-recruitment-v0.3.md         (老版本)
+├── demo-hr-recruitment/
+│   ├── index.html                         (v1.0 应用)
+│   ├── CHANGELOG.md                       (v0.2 / v0.3 / v1.0 / patch 全记录)
+│   └── README.md                          (用户手册)
+└── demo-hr-recruitment-v0.3-snapshot-20260708/   (冻结的老版本)
+    └── index.html                         (出问题可回滚)
+</code></pre>
+
+<h3 id="4场景对照表" class="font-bold mb-3 mt-6 text-xl">4 场景对照表</h3>
+
+
+<h3 id="学员学到的关键点" class="font-bold mb-3 mt-6 text-xl">学员学到的关键点</h3>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">PRD 永远领先于代码</strong>:任何改字段、改流程、改业务规则的请求,都先动 PRD 再动代码</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">CHANGELOG 是审计追踪</strong>:出问题能查「哪天改了什么」</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">场景路由决定工作流</strong>:30 秒判断属于 4 种场景中的哪一种,流程就清晰了</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">数据兼容是底线</strong>:字段重命名加映射,字段删除要容错,字段新增给默认值,大改写迁移函数</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">「冻结老版 + 主版本号 +1」是场景 C 的安全网</strong>:出问题了能回滚</li>
+
+<h3 id="学员可以拿这份demo练什么" class="font-bold mb-3 mt-6 text-xl">学员可以拿这份 demo 练什么</h3>
+
+<li class="ml-4 mb-1">自己扮演小王,选一个真实业务(不是 HR 也行),跟 Skill 跑一遍 4 场景</li>
+<li class="ml-4 mb-1">看每个场景的「30 秒判断」怎么做的(回看本 demo 第 A.1 / B.1 / C.1 / D.1 节)</li>
+<li class="ml-4 mb-1">看每个场景的「反模式」(回看 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code> 各场景末尾)</li>
+<li class="ml-4 mb-1">比对最终交付物结构,跟自己的实际项目交付物对照</li>
+
+<h2 id="下一步" class="font-bold mb-3 mt-6 text-2xl">下一步</h2>
+
+<li class="ml-4 mb-1">想了解场景路由的判定细节,读 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code></li>
+<li class="ml-4 mb-1">想看实际可用的 demo 长什么样,打开 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-hr-recruitment/index.html</code></li>
+<li class="ml-4 mb-1">想了解 CRUD 实现规范,读 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/crud-pattern.md</code></li>
+<li class="ml-4 mb-1">想了解 PRD 模板结构,读 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/prd-template.md</code> 和 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">assets/prd-template.md</code></li>
+
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 dark:border-slate-700 mt-12">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center text-sm">
+      <div><a href="examples-readme.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>examples/README.md · 学员快速开始</a></div><div><a href="student-checklist.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600">student-checklist.md · 作业 checklist<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </div>
+  </div>
+
+  <script>
+    try {
+      const t = localStorage.getItem('md-theme');
+      if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>
