@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>student-checklist.md · 作业 checklist</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } };
+  </script>
+  <style>
+    :root { --bg: 0 0% 100%; --fg: 222.2 84% 4.9%; --card: 0 0% 100%; --border: 214.3 31.8% 91.4%; --muted: 210 40% 96.1%; }
+    .dark { --bg: 222.2 84% 4.9%; --fg: 210 40% 98%; --card: 222.2 84% 6.5%; --border: 217.2 32.6% 17.5%; --muted: 217.2 32.6% 12.5%; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: hsl(var(--bg)); color: hsl(var(--fg)); }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    code { font-family: 'JetBrains Mono', monospace; }
+    h1, h2, h3 { scroll-margin-top: 5rem; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; }
+    thead { background: hsl(var(--muted)); }
+    tbody tr:hover { background: hsl(var(--muted)); }
+  </style>
+</head>
+<body>
+  <div class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur" style="height:56px; display:flex; align-items:center;">
+    <div class="max-w-4xl mx-auto px-6 w-full flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          返回教学门户
+        </a>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm font-mono opacity-50">student-checklist.md · 作业 checklist</span>
+      </div>
+      <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('md-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm hover:opacity-80 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-10" x-data="{ dark: localStorage.getItem('md-theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="document.documentElement.classList.toggle('dark', dark)">
+    <div class="prose prose-slate dark:prose-invert max-w-none">
+      <h1 id="学员作业checklist业务助手智能体" class="font-bold mb-3 mt-6 text-3xl">学员作业 checklist · 业务助手智能体</h1>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80"><strong class="font-semibold">用法</strong>:把这份文件复制一份到你自己项目的 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/</code> 下,改名 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">checklist-<产品名>.md</code>,边做边勾。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">每一项的"判定标准"是红绿灯,打不上勾就回去重做,不要跳。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">做完后,这份 checklist 就是你交付的"过程文档",可作为培训考核依据。</blockquote>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="0基本信息" class="font-bold mb-3 mt-6 text-2xl">0. 基本信息</h2>
+
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="1阶段一需求发现目标30分钟以内" class="font-bold mb-3 mt-6 text-2xl">1. 阶段一:需求发现(目标 30 分钟以内)</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:3 轮对话搞清楚业务场景、用户角色、核心功能,没有一次问 10 个问题把用户淹没。</strong></p>
+
+<h3 id="11第1轮角色痛点" class="font-bold mb-3 mt-6 text-xl">1.1 第 1 轮:角色 + 痛点</h3>
+
+<li class="ml-4 mb-1">[ ] 主动告诉用户"接下来会发生什么"</li>
+<li class="ml-4 mb-1">[ ] 问到了「这个工具给谁用」</li>
+<li class="ml-4 mb-1">[ ] 问到了「解决什么具体痛点」</li>
+<li class="ml-4 mb-1">[ ] 问到了「大致使用频率」</li>
+<li class="ml-4 mb-1">[ ] 没有一次问超过 3 个问题</li>
+
+<p class="mb-3 text-sm leading-relaxed">我的第 1 轮问题(复制你实际问的):</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+1.
+2.
+3.
+</code></pre>
+
+<h3 id="12第2轮核心功能字段" class="font-bold mb-3 mt-6 text-xl">1.2 第 2 轮:核心功能 + 字段</h3>
+
+<li class="ml-4 mb-1">[ ] 问到了「主要想记录哪些信息」</li>
+<li class="ml-4 mb-1">[ ] 问到了「关键操作」(新建 / 编辑 / 删除 / 搜索 / 导出)</li>
+<li class="ml-4 mb-1">[ ] 问到了「有没有流程性要求」</li>
+<li class="ml-4 mb-1">[ ] 给用户提了字段建议,让他加 / 删</li>
+
+<p class="mb-3 text-sm leading-relaxed">我的第 2 轮问题:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+1.
+2.
+3.
+</code></pre>
+
+<h3 id="13第3轮风格参考" class="font-bold mb-3 mt-6 text-xl">1.3 第 3 轮:风格 + 参考</h3>
+
+<li class="ml-4 mb-1">[ ] 问到了「风格偏好」</li>
+<li class="ml-4 mb-1">[ ] 问到了「有没有参考的网站/产品」</li>
+<li class="ml-4 mb-1">[ ] 主动预告"接下来要写产品文档"</li>
+
+<p class="mb-3 text-sm leading-relaxed">我学到的关键点(用一句话写):</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<h3 id="14反模式自检" class="font-bold mb-3 mt-6 text-xl">1.4 反模式自检</h3>
+
+<li class="ml-4 mb-1">[ ] 我没有一次问超过 3 个问题</li>
+<li class="ml-4 mb-1">[ ] 我没有替用户做业务决策</li>
+<li class="ml-4 mb-1">[ ] 我没有急着进 PRD</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">阶段一用时(分钟)</strong>:____ <strong class="font-semibold">阶段一通过</strong>:□ 是 □ 否</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="2阶段二prd自动生成目标60分钟以内" class="font-bold mb-3 mt-6 text-2xl">2. 阶段二:PRD 自动生成(目标 60 分钟以内)</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:PRD 写到文件(不是对话),包含所有必要章节,用户审阅后确认。</strong></p>
+
+<h3 id="21写出prd" class="font-bold mb-3 mt-6 text-xl">2.1 写出 PRD</h3>
+
+<li class="ml-4 mb-1">[ ] PRD 写到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-<产品名>-v0.1.md</code></li>
+<li class="ml-4 mb-1">[ ] PRD 包含「产品定位」</li>
+<li class="ml-4 mb-1">[ ] PRD 包含「目标用户」</li>
+<li class="ml-4 mb-1">[ ] PRD 包含「使用场景」</li>
+<li class="ml-4 mb-1">[ ] PRD 包含「核心功能列表」(带优先级 P0/P1/P2)</li>
+<li class="ml-4 mb-1">[ ] PRD 包含「页面结构」(主导航 + 子视图)</li>
+<li class="ml-4 mb-1">[ ] PRD 包含「字段定义」(每张表/模块)</li>
+<li class="ml-4 mb-1">[ ] PRD 包含「交互细节」</li>
+<li class="ml-4 mb-1">[ ] PRD 包含「视觉风格」</li>
+<li class="ml-4 mb-1">[ ] PRD 顶部有「产品名 / 版本 / 最后更新」字段</li>
+
+<p class="mb-3 text-sm leading-relaxed">我的 PRD 路径:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+outputs/prd-&lt;产品名&gt;-v0.1.md
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">PRD 字节数:____  KB PRD 章节数:____ 个</p>
+
+<h3 id="22主动告知用户" class="font-bold mb-3 mt-6 text-xl">2.2 主动告知用户</h3>
+
+<li class="ml-4 mb-1">[ ] 告诉用户 PRD 文件路径</li>
+<li class="ml-4 mb-1">[ ] 告诉用户请逐项审阅</li>
+<li class="ml-4 mb-1">[ ] 告诉用户有问题说"修改 XX 部分"</li>
+<li class="ml-4 mb-1">[ ] 告诉用户没问题说"OK"</li>
+
+<h3 id="23用户审阅与修改" class="font-bold mb-3 mt-6 text-xl">2.3 用户审阅与修改</h3>
+
+<li class="ml-4 mb-1">[ ] 用户审阅了 PRD</li>
+<li class="ml-4 mb-1">[ ] 用户给了反馈(我做了 N 处修改):N = ____</li>
+<li class="ml-4 mb-1">[ ] 用户最终确认 "OK / 开始生成 Demo"</li>
+
+<p class="mb-3 text-sm leading-relaxed">我做的修改:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+1.
+2.
+3.
+</code></pre>
+
+<h3 id="24反模式自检" class="font-bold mb-3 mt-6 text-xl">2.4 反模式自检</h3>
+
+<li class="ml-4 mb-1">[ ] PRD 写到文件(不写到对话)</li>
+<li class="ml-4 mb-1">[ ] 我没有闷头生成 Demo,等用户确认了</li>
+<li class="ml-4 mb-1">[ ] 我没有省略字段定义</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">阶段二用时(分钟)</strong>:____ <strong class="font-semibold">阶段二通过</strong>:□ 是 □ 否</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="3阶段三网页应用生成目标30分钟以内" class="font-bold mb-3 mt-6 text-2xl">3. 阶段三:网页应用生成(目标 30 分钟以内)</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:单文件 HTML Demo,所有 CRUD 真的能用,左右导航,双主题。</strong></p>
+
+<h3 id="31生成demo" class="font-bold mb-3 mt-6 text-xl">3.1 生成 Demo</h3>
+
+<li class="ml-4 mb-1">[ ] Demo 写到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/index.html</code></li>
+<li class="ml-4 mb-1">[ ] 是单文件 HTML(没拆多文件)</li>
+<li class="ml-4 mb-1">[ ] 双击能在浏览器打开</li>
+
+<p class="mb-3 text-sm leading-relaxed">我的 Demo 路径:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+outputs/&lt;产品名&gt;/index.html
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">Demo 字节数:____  KB Demo 视图数:____ 个</p>
+
+<h3 id="32硬性自检对照skillmd第5节" class="font-bold mb-3 mt-6 text-xl">3.2 硬性自检(对照 SKILL.md 第 5 节)</h3>
+
+<li class="ml-4 mb-1">[ ] 主导航在<strong class="font-semibold">左侧</strong>(<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">lg:pl-60</code>)</li>
+<li class="ml-4 mb-1">[ ] 顶部 16px 固定栏</li>
+<li class="ml-4 mb-1">[ ] 浅色 + 深色双主题(自动 + 手动切换)</li>
+<li class="ml-4 mb-1">[ ] 5 种状态色(绿/黄/红/蓝/灰)</li>
+<li class="ml-4 mb-1">[ ] Tailwind safelist 包含动态状态色类</li>
+<li class="ml-4 mb-1">[ ] lucide 图标(零 emoji)</li>
+<li class="ml-4 mb-1">[ ] 每个图标按钮带 aria-label</li>
+<li class="ml-4 mb-1">[ ] Modal 含 ESC 关闭</li>
+<li class="ml-4 mb-1">[ ] Modal 含 click.outside 关闭</li>
+<li class="ml-4 mb-1">[ ] localStorage 持久化(关闭浏览器再开数据还在)</li>
+<li class="ml-4 mb-1">[ ] 移动端 375px 适配(用手机/开发者工具看)</li>
+
+<h3 id="33crud实地测试对照crud-patternmd" class="font-bold mb-3 mt-6 text-xl">3.3 CRUD 实地测试(对照 crud-pattern.md)</h3>
+
+<li class="ml-4 mb-1">[ ] 新建一条数据,保存后出现在列表里</li>
+<li class="ml-4 mb-1">[ ] 刷新页面,数据还在</li>
+<li class="ml-4 mb-1">[ ] 编辑一条数据,保存后内容更新</li>
+<li class="ml-4 mb-1">[ ] 删除一条数据,有确认弹窗 + 删除后从列表消失</li>
+<li class="ml-4 mb-1">[ ] 搜索/筛选能用(如果有)</li>
+
+<p class="mb-3 text-sm leading-relaxed">我测过的新建/编辑/删除次数:____</p>
+
+<h3 id="34主动告知用户" class="font-bold mb-3 mt-6 text-xl">3.4 主动告知用户</h3>
+
+<li class="ml-4 mb-1">[ ] 告诉用户 Demo 路径</li>
+<li class="ml-4 mb-1">[ ] 告诉用户怎么用(双击打开、刷新不丢)</li>
+<li class="ml-4 mb-1">[ ] 告诉用户怎么改(在对话里继续提建议)</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">阶段三用时(分钟)</strong>:____ <strong class="font-semibold">阶段三通过</strong>:□ 是 □ 否</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="4场景a加一个字段目标15分钟以内" class="font-bold mb-3 mt-6 text-2xl">4. 场景 A:加一个字段(目标 15 分钟以内)</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:PRD 改、代码改、CHANGELOG 改,老数据不丢。</strong></p>
+
+<h3 id="41设计要加的字段" class="font-bold mb-3 mt-6 text-xl">4.1 设计要加的字段</h3>
+
+<p class="mb-3 text-sm leading-relaxed">字段名:<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">____</code>(中英文都可以) 类型:□ 文本 □ 数字 □ 日期 □ 枚举 □ 关联 □ 布尔 必填:□ 是 □ 否 说明:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<h3 id="4230秒判断这是不是场景a" class="font-bold mb-3 mt-6 text-xl">4.2 30 秒判断:这是不是场景 A?</h3>
+
+<li class="ml-4 mb-1">[ ] 这次改动是「字段调整」(不是流程推翻、不是视觉微调)</li>
+<li class="ml-4 mb-1">[ ] 影响范围 < 30% 代码</li>
+<li class="ml-4 mb-1">[ ] → 是场景 A</li>
+
+<h3 id="43改前告诉用户要做什么" class="font-bold mb-3 mt-6 text-xl">4.3 改前告诉用户要做什么</h3>
+
+<li class="ml-4 mb-1">[ ] 给用户看了"准备改 N 处"清单</li>
+<li class="ml-4 mb-1">[ ] 说明了数据兼容方案(老字段怎么兜底)</li>
+<li class="ml-4 mb-1">[ ] 用户确认了</li>
+
+<h3 id="44实际改动" class="font-bold mb-3 mt-6 text-xl">4.4 实际改动</h3>
+
+<li class="ml-4 mb-1">[ ] PRD 字段表加了这一行,版本号 v0.x → v0.x+1</li>
+<li class="ml-4 mb-1">[ ] Demo 代码加了字段处理(default + 保存 + 展示)</li>
+<li class="ml-4 mb-1">[ ] CHANGELOG.md 顶部加了一段记录</li>
+<li class="ml-4 mb-1">[ ] 老数据兼容:<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">?? defaultValue</code> 或 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">?? null</code></li>
+
+<h3 id="45改完告诉用户" class="font-bold mb-3 mt-6 text-xl">4.5 改完告诉用户</h3>
+
+<li class="ml-4 mb-1">[ ] 告诉用户改了什么(枚举 1-3 条)</li>
+<li class="ml-4 mb-1">[ ] 告诉用户数据是否兼容</li>
+<li class="ml-4 mb-1">[ ] 告诉用户怎么验证(打开哪个视图,点哪个按钮)</li>
+
+<h3 id="46实地验证" class="font-bold mb-3 mt-6 text-xl">4.6 实地验证</h3>
+
+<li class="ml-4 mb-1">[ ] 打开 Demo,看到新字段</li>
+<li class="ml-4 mb-1">[ ] 新建一条带新字段的数据,保存后展示正确</li>
+<li class="ml-4 mb-1">[ ] 老数据(改前建的)还能看到,新字段显示为默认值</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 A 用时(分钟)</strong>:____ <strong class="font-semibold">场景 A 通过</strong>:□ 是 □ 否</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="5场景b把对话内容合并到prd目标20分钟以内" class="font-bold mb-3 mt-6 text-2xl">5. 场景 B:把对话内容合并到 PRD(目标 20 分钟以内)</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:从对话里抽出事实,去重,定位到对应章节,用户确认后才写文件。</strong></p>
+
+<h3 id="51触发" class="font-bold mb-3 mt-6 text-xl">5.1 触发</h3>
+
+<li class="ml-4 mb-1">[ ] 用户明确说"把刚才聊的也写到 PRD" / 类似的话</li>
+<p class="mb-3 text-sm leading-relaxed">→ 或者:</p>
+<li class="ml-4 mb-1">[ ] 我推断出有 2 轮以上对话在补充业务细节,主动问用户"要不要合并"</li>
+
+<h3 id="52抽对话事实" class="font-bold mb-3 mt-6 text-xl">5.2 抽对话事实</h3>
+
+<p class="mb-3 text-sm leading-relaxed">我从对话里挑出 N 条事实陈述(过滤掉寒暄、确认、疑问):N = ____</p>
+
+<p class="mb-3 text-sm leading-relaxed">我挑出的事实:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+1.
+2.
+3.
+4.
+</code></pre>
+
+<h3 id="53去重定位" class="font-bold mb-3 mt-6 text-xl">5.3 去重 + 定位</h3>
+
+<li class="ml-4 mb-1">[ ] 和当前 PRD 比对了,标了哪些是新的、哪些是重复的</li>
+<li class="ml-4 mb-1">[ ] 每条新信息路由到对应章节(产品定位/字段/功能/业务规则)</li>
+
+<h3 id="54草案给用户看" class="font-bold mb-3 mt-6 text-xl">5.4 草案给用户看</h3>
+
+<li class="ml-4 mb-1">[ ] 在对话里展示了"准备合并 N 条"的清单(没直接打文件)</li>
+<li class="ml-4 mb-1">[ ] 标了每条是「新增」还是「补全」</li>
+<li class="ml-4 mb-1">[ ] 用户可以微调措辞</li>
+
+<h3 id="55用户确认后写入" class="font-bold mb-3 mt-6 text-xl">5.5 用户确认后写入</h3>
+
+<li class="ml-4 mb-1">[ ] 用户说 OK(或微调后 OK)</li>
+<li class="ml-4 mb-1">[ ] PRD 真的写了文件,版本号 +1</li>
+<li class="ml-4 mb-1">[ ] CHANGELOG.md 写了这段变更</li>
+
+<h3 id="56主动询问重生成" class="font-bold mb-3 mt-6 text-xl">5.6 主动询问重生成</h3>
+
+<li class="ml-4 mb-1">[ ] 改完问用户"PRD 改完了,要重新生成应用吗"</li>
+<li class="ml-4 mb-1">[ ] 用户给了答复:□ 现在重生成 □ 之后再改 □ 这版规则不用落代码</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 B 用时(分钟)</strong>:____ <strong class="font-semibold">场景 B 通过</strong>:□ 是 □ 否</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="6场景c重大改动重生成目标60分钟以内" class="font-bold mb-3 mt-6 text-2xl">6. 场景 C:重大改动重生成(目标 60 分钟以内)</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:冻结老版本、主版本 +1、写迁移函数、Breaking 标注、回滚方法齐全。</strong></p>
+
+<h3 id="6130秒判断这是不是场景c" class="font-bold mb-3 mt-6 text-xl">6.1 30 秒判断:这是不是场景 C?</h3>
+
+<li class="ml-4 mb-1">[ ] 改动影响 > 30% 代码,或 3 个以上模块</li>
+<li class="ml-4 mb-1">[ ] 改了核心流程,或改了数据结构</li>
+<li class="ml-4 mb-1">[ ] → 是场景 C</li>
+
+<h3 id="62冻结老版本" class="font-bold mb-3 mt-6 text-xl">6.2 冻结老版本</h3>
+
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/</code> 复制到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>-v<X.Y>-snapshot-YYYYMMDD/</code></li>
+<li class="ml-4 mb-1">[ ] 老 PRD 复制到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/_archive/prd-<产品名>-v<X.Y>.md</code></li>
+<li class="ml-4 mb-1">[ ] 用户确认了冻结方案</li>
+
+<p class="mb-3 text-sm leading-relaxed">冻结后文件结构:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+outputs/
+├── &lt;产品名&gt;-v0.X-snapshot-YYYYMMDD/    ← 冻结的老版
+├── _archive/
+│   └── prd-&lt;产品名&gt;-v0.X.md            ← 冻结的 PRD
+└── &lt;产品名&gt;/                            ← 即将写新版
+</code></pre>
+
+<h3 id="63主版本号1" class="font-bold mb-3 mt-6 text-xl">6.3 主版本号 +1</h3>
+
+<li class="ml-4 mb-1">[ ] PRD 顶部版本从 v0.X → v1.0</li>
+<li class="ml-4 mb-1">[ ] PRD 顶部标注「基于 v0.X 重大重构」</li>
+<li class="ml-4 mb-1">[ ] 新文件 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-<产品名>-v1.0.md</code></li>
+
+<h3 id="64整页重写不继承老代码" class="font-bold mb-3 mt-6 text-xl">6.4 整页重写(不继承老代码)</h3>
+
+<li class="ml-4 mb-1">[ ] 我是从 PRD 重新生成的,不是基于老 HTML 改</li>
+<li class="ml-4 mb-1">[ ] 重写时新代码结构更清晰(不是把老逻辑搬过来)</li>
+
+<h3 id="65数据迁移函数" class="font-bold mb-3 mt-6 text-xl">6.5 数据迁移函数</h3>
+
+<li class="ml-4 mb-1">[ ] 写了 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">migrateData_vX_vY(oldData)</code> 函数</li>
+<li class="ml-4 mb-1">[ ] 启动时检测版本,自动调用迁移</li>
+<li class="ml-4 mb-1">[ ] 迁移失败的数据备份到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">localStorage[<产品名>__backup_vX]</code></li>
+<li class="ml-4 mb-1">[ ] 老数据完整保留(不丢字段)</li>
+
+<p class="mb-3 text-sm leading-relaxed">我的迁移函数关键代码:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-javascript">
+function migrateData_v0_v1(oldData) {
+  //
+}
+</code></pre>
+
+<h3 id="66changelog大事记" class="font-bold mb-3 mt-6 text-xl">6.6 CHANGELOG 大事记</h3>
+
+<li class="ml-4 mb-1">[ ] CHANGELOG.md 顶部加了一段大事记</li>
+<li class="ml-4 mb-1">[ ] 标了 ⚠️ Breaking</li>
+<li class="ml-4 mb-1">[ ] 列了业务/技术/数据三个维度的变化</li>
+<li class="ml-4 mb-1">[ ] 给了回滚方法(把 snapshot 复制回来)</li>
+
+<h3 id="67改完告诉用户" class="font-bold mb-3 mt-6 text-xl">6.7 改完告诉用户</h3>
+
+<li class="ml-4 mb-1">[ ] 改了哪 N 处(枚举 1-3 条)</li>
+<li class="ml-4 mb-1">[ ] 数据怎么兼容的</li>
+<li class="ml-4 mb-1">[ ] 怎么验证(刷新触发迁移、看备份、控制台命令)</li>
+<li class="ml-4 mb-1">[ ] 怎么回滚(出问题时把 snapshot 复制回来)</li>
+
+<h3 id="68实地验证" class="font-bold mb-3 mt-6 text-xl">6.8 实地验证</h3>
+
+<li class="ml-4 mb-1">[ ] 刷新一次 Demo,触发迁移</li>
+<li class="ml-4 mb-1">[ ] 老数据还在,字段没丢</li>
+<li class="ml-4 mb-1">[ ] 控制台跑 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">localStorage.getItem("<产品名>__backup_vX")</code> 能看到备份</li>
+<li class="ml-4 mb-1">[ ] 新流程生效(新数据走新路径)</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 C 用时(分钟)</strong>:____ <strong class="font-semibold">场景 C 通过</strong>:□ 是 □ 否</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="7场景d小改直接动代码目标10分钟以内" class="font-bold mb-3 mt-6 text-2xl">7. 场景 D:小改直接动代码(目标 10 分钟以内)</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:纯视觉/文案,不改业务,PRD 不动,CHANGELOG 加 patch 记录。</strong></p>
+
+<h3 id="7130秒判断这是不是场景d" class="font-bold mb-3 mt-6 text-xl">7.1 30 秒判断:这是不是场景 D?</h3>
+
+<li class="ml-4 mb-1">[ ] 是纯视觉/文案/微调</li>
+<li class="ml-4 mb-1">[ ] 不改字段、不改流程、不改视图结构</li>
+<li class="ml-4 mb-1">[ ] → 是场景 D</li>
+
+<h3 id="72改前确认不必须" class="font-bold mb-3 mt-6 text-xl">7.2 改前确认(不必须)</h3>
+
+<p class="mb-3 text-sm leading-relaxed">场景 D 可以直接动,但建议先告诉用户改什么:</p>
+<li class="ml-4 mb-1">[ ] 简短告诉用户"我准备改 X,Y"</li>
+<p class="mb-3 text-sm leading-relaxed">→ 或者:</p>
+<li class="ml-4 mb-1">[ ] 直接动手(改动很小,改完再说)</li>
+
+<h3 id="73实际改动" class="font-bold mb-3 mt-6 text-xl">7.3 实际改动</h3>
+
+<li class="ml-4 mb-1">[ ] 改了 CSS class / 内联样式 / 文案</li>
+<li class="ml-4 mb-1">[ ] 没动业务逻辑</li>
+<li class="ml-4 mb-1">[ ] 没动 PRD</li>
+<li class="ml-4 mb-1">[ ] CHANGELOG.md 顶部加了 patch 记录(不升版本号)</li>
+
+<p class="mb-3 text-sm leading-relaxed">我改了:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+-
+-
+</code></pre>
+
+<h3 id="74改完告诉用户" class="font-bold mb-3 mt-6 text-xl">7.4 改完告诉用户</h3>
+
+<li class="ml-4 mb-1">[ ] 改了什么(1-2 条)</li>
+<li class="ml-4 mb-1">[ ] 提示「刷新浏览器」</li>
+
+<h3 id="75实地验证" class="font-bold mb-3 mt-6 text-xl">7.5 实地验证</h3>
+
+<li class="ml-4 mb-1">[ ] 刷新浏览器,看到改动</li>
+<li class="ml-4 mb-1">[ ] 深色模式下也看着正常(如果改了颜色)</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">场景 D 用时(分钟)</strong>:____ <strong class="font-semibold">场景 D 通过</strong>:□ 是 □ 否</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="8最终交付清单" class="font-bold mb-3 mt-6 text-2xl">8. 最终交付清单</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">判定标准:PRD / 代码 / CHANGELOG 三件套齐,过程文档完整,数据能导出。</strong></p>
+
+<h3 id="81必备文件" class="font-bold mb-3 mt-6 text-xl">8.1 必备文件</h3>
+
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-<产品名>-v<最终版>.md</code></li>
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/index.html</code></li>
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/CHANGELOG.md</code></li>
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/README.md</code>(用户手册,告诉别人怎么用)</li>
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">checklist-<产品名>.md</code>(本文件,作为过程文档)</li>
+
+<h3 id="82归档如果做过场景c" class="font-bold mb-3 mt-6 text-xl">8.2 归档(如果做过场景 C)</h3>
+
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/_archive/prd-<产品名>-v0.X.md</code></li>
+<li class="ml-4 mb-1">[ ] <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>-v0.X-snapshot-YYYYMMDD/index.html</code></li>
+
+<h3 id="83数据" class="font-bold mb-3 mt-6 text-xl">8.3 数据</h3>
+
+<li class="ml-4 mb-1">[ ] Demo 在浏览器里跑起来,数据有(打开看仪表盘,有没有 KPI)</li>
+<li class="ml-4 mb-1">[ ] 数据导出按钮能用(如果有)</li>
+<li class="ml-4 mb-1">[ ] 至少 3 条真实业务数据(不是空架子)</li>
+
+<p class="mb-3 text-sm leading-relaxed">我的 Demo 数据:</p>
+<li class="ml-4 mb-1">招聘需求:____ 条</li>
+<li class="ml-4 mb-1">候选人:____ 条</li>
+<li class="ml-4 mb-1">面试评价:____ 条</li>
+<p class="mb-3 text-sm leading-relaxed"><em>(改成你自己的实体和数据)</em></p>
+
+<h3 id="84业务自检" class="font-bold mb-3 mt-6 text-xl">8.4 业务自检</h3>
+
+<p class="mb-3 text-sm leading-relaxed">找一个没用过这个产品的同事,让他:</p>
+<li class="ml-4 mb-1">[ ] 看 README 后能上手(给 5 分钟)</li>
+<li class="ml-4 mb-1">[ ] 能完成至少 1 个核心场景(比如新建一条记录)</li>
+<li class="ml-4 mb-1">[ ] 没问"这个按钮是干嘛的"</li>
+
+<p class="mb-3 text-sm leading-relaxed">同事反馈(记录他说的 1-2 句):</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="9自评打分" class="font-bold mb-3 mt-6 text-2xl">9. 自评打分</h2>
+
+<h3 id="91完成度每项10分满分70" class="font-bold mb-3 mt-6 text-xl">9.1 完成度(每项 10 分,满分 70)</h3>
+
+
+<h3 id="92质量分每项6分满分30" class="font-bold mb-3 mt-6 text-xl">9.2 质量分(每项 6 分,满分 30)</h3>
+
+
+<p class="mb-3 text-sm leading-relaxed"><em>(实际满分 30,这里写 36 是因为可以奖励 6 分给特别出色的项)</em></p>
+
+<h3 id="93总分" class="font-bold mb-3 mt-6 text-xl">9.3 总分</h3>
+
+<p class="mb-3 text-sm leading-relaxed">完成度( / 70)+ 质量分( / 30)= <strong class="font-semibold">总分 / 100</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">等级:</p>
+<li class="ml-4 mb-1">90+:优秀,直接可交付生产</li>
+<li class="ml-4 mb-1">75-89:良好,需要少量打磨</li>
+<li class="ml-4 mb-1">60-74:合格,需要中等打磨</li>
+<li class="ml-4 mb-1">< 60:不合格,需要返工</li>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">我的总分</strong>:____ <strong class="font-semibold">我的等级</strong>:____</p>
+
+<h3 id="94自我反思3句话" class="font-bold mb-3 mt-6 text-xl">9.4 自我反思(3 句话)</h3>
+
+<p class="mb-3 text-sm leading-relaxed">我做得最好的:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">我做得最差的:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">下次我会在哪方面改进:</p>
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+
+</code></pre>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="10提交给培训讲师" class="font-bold mb-3 mt-6 text-2xl">10. 提交给培训讲师</h2>
+
+<p class="mb-3 text-sm leading-relaxed">学员在课程结束前,把以下文件打包发邮件/上传到共享目录:</p>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+提交物/
+├── outputs/
+│   ├── prd-&lt;产品名&gt;-v&lt;最终版&gt;.md
+│   ├── &lt;产品名&gt;/
+│   │   ├── index.html
+│   │   ├── CHANGELOG.md
+│   │   └── README.md
+│   ├── _archive/(如果有)
+│   └── &lt;产品名&gt;-v0.X-snapshot-YYYYMMDD/(如果有)
+├── checklist-&lt;产品名&gt;.md   ← 本文件,带勾选结果
+└── 演示视频(可选,3-5 分钟录屏)
+</code></pre>
+
+<li class="ml-4 mb-1">[ ] 提交物目录完整</li>
+<li class="ml-4 mb-1">[ ] checklist 全部打勾(或明确标注"未做"的原因)</li>
+<li class="ml-4 mb-1">[ ] 演示视频录了(可选)</li>
+<li class="ml-4 mb-1">[ ] 邮件/共享链接发给讲师</li>
+
+<p class="mb-3 text-sm leading-relaxed">提交日期:____ 讲师确认:□ 已收 □ 待确认 □ 退回修改</p>
+
+<hr class="border-slate-200 dark:border-slate-700 my-6">
+
+<h2 id="附录常见挂科项" class="font-bold mb-3 mt-6 text-2xl">附录:常见挂科项</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">最容易挂的 10 项</strong>(讲师评分时重点看):</p>
+
+<li class="ml-4 mb-1">PRD 写到对话里(必须写文件)</li>
+<li class="ml-4 mb-1">PRD 写完闷头生成 Demo(没等用户确认)</li>
+<li class="ml-4 mb-1">CRUD 是空架子(按钮在,提交没反应)</li>
+<li class="ml-4 mb-1">改了字段没写 CHANGELOG</li>
+<li class="ml-4 mb-1">改了字段没升 PRD 版本号</li>
+<li class="ml-4 mb-1">改了字段没做数据兼容(老数据崩了)</li>
+<li class="ml-4 mb-1">场景 C 没冻结老版本,出问题回不去</li>
+<li class="ml-4 mb-1">场景 C 没写迁移函数,数据丢了</li>
+<li class="ml-4 mb-1">主导航放右侧(用户已经明确要求左侧)</li>
+<li class="ml-4 mb-1">视觉用了 emoji 当图标(用 lucide)</li>
+
+<p class="mb-3 text-sm leading-relaxed">每挂一项扣 5-10 分,直到扣完为止。</p>
+
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 dark:border-slate-700 mt-12">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center text-sm">
+      <div><a href="walkthrough.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>walkthrough-hr-recruitment.md · 完整演练</a></div><div><a href="instructor-guide.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600">instructor-guide.md · 讲师课程大纲<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </div>
+  </div>
+
+  <script>
+    try {
+      const t = localStorage.getItem('md-theme');
+      if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>
