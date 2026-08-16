@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>销售拜访纪要 · 业务助手智能体 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 221.2 83.2% 53.3%;
+    --success: 142.1 76.2% 36.3%;
+    --destructive: 0 84.2% 60.2%;
+    --warning: 38 92% 50%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 222.2 47.4% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 47.4% 8%;
+    --border: 217.2 32.6% 17.5%;
+    --primary: 217 91% 60%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --success: 142.1 70% 45%;
+    --destructive: 0 72% 51%;
+  }
+  body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: Inter, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  [x-cloak] { display: none !important; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
+</style>
+<script>
+  if (window.matchMedia("(prefers-color-scheme: dark)").matches) { document.documentElement.classList.add("dark"); }
+  tailwind.config = {
+    darkMode: "class",
+    theme: { extend: {
+      colors: {
+        background: "hsl(var(--background))", foreground: "hsl(var(--foreground))", card: "hsl(var(--card))", border: "hsl(var(--border))",
+        primary: { DEFAULT: "hsl(var(--primary))", foreground: "hsl(var(--primary-foreground))" },
+        muted: { DEFAULT: "hsl(var(--muted))", foreground: "hsl(var(--muted-foreground))" },
+        accent: "hsl(var(--accent))", success: "hsl(var(--success))", destructive: { DEFAULT: "hsl(var(--destructive))", foreground: "hsl(var(--primary-foreground))" }, warning: "hsl(var(--warning))",
+      },
+      borderRadius: { lg: "var(--radius)", md: "calc(var(--radius) - 2px)", sm: "calc(var(--radius) - 4px)" },
+    } },
+    safelist: ["bg-emerald-100","text-emerald-700","bg-emerald-500/20","text-emerald-300","bg-amber-100","text-amber-700","bg-amber-500/20","text-amber-300","bg-rose-100","text-rose-700","bg-rose-500/20","text-rose-300","bg-blue-100","text-blue-700","bg-blue-500/20","text-blue-300","bg-slate-100","text-slate-700","bg-slate-500/20","text-slate-300","bg-indigo-100","text-indigo-700","bg-indigo-500/20","text-indigo-300","bg-emerald-500","bg-amber-500","bg-rose-500","bg-blue-500","bg-slate-500","bg-indigo-500"],
+  };
+</script>
+</head>
+<body x-data="app()" x-init="init()" x-cloak>
+
+  <!-- 顶部栏 -->
+  <header class="fixed inset-x-0 top-0 z-30 h-16 border-b border-border bg-background/80 backdrop-blur">
+    <div class="flex h-full items-center justify-between px-4 sm:px-6">
+      <div class="flex items-center gap-3">
+        <button @click="drawerOpen = !drawerOpen" class="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-muted lg:hidden" aria-label="打开菜单"><i data-lucide="menu" class="h-5 w-5"></i></button>
+        <div class="flex items-center gap-2 font-semibold"><i data-lucide="sparkles" class="h-5 w-5 text-primary"></i><span>销售拜访纪要</span></div>
+      </div>
+      <div class="hidden flex-1 px-8 md:block max-w-md">
+        <div class="relative">
+          <i data-lucide="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"></i>
+          <input x-model="listQuery" type="text" placeholder="搜索客户或负责人..." class="h-9 w-full rounded-md border border-border bg-muted/50 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:bg-background focus:outline-none" />
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <button @click="toggleTheme()" class="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-muted" :aria-label="dark ? '切换到浅色' : '切换到深色'"><i :data-lucide="dark ? 'sun' : 'moon'" class="h-4 w-4"></i></button>
+        <button class="relative inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-muted" aria-label="通知"><i data-lucide="bell" class="h-4 w-4"></i><span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-destructive"></span></button>
+        <div class="ml-2 flex items-center gap-2 rounded-full border border-border p-0.5 pr-3">
+          <div class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground" x-text="product.avatar_initial"></div>
+          <span class="hidden text-sm font-medium sm:inline" x-text="product.user_name"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 左侧导航 -->
+  <aside :class="drawerOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-20 w-60 transform border-r border-border bg-background pt-16 transition-transform duration-200 lg:translate-x-0">
+    <nav class="h-full overflow-y-auto p-3 space-y-1">
+      <template x-for="group in navGroups" :key="group.id">
+        <div>
+          <button @click="toggleGroup(group.id)" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground">
+            <span x-text="group.label"></span>
+            <i :data-lucide="groupOpen[group.id] ? 'chevron-down' : 'chevron-right'" class="h-3.5 w-3.5"></i>
+          </button>
+          <div x-show="groupOpen[group.id]" x-collapse class="mt-1 space-y-0.5">
+            <template x-for="item in group.items" :key="item.page">
+              <a @click="go(item.page)" :class="page === item.page ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground'" class="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm">
+                <i :data-lucide="item.icon" class="h-4 w-4"></i>
+                <span x-text="item.label"></span>
+              </a>
+            </template>
+          </div>
+        </div>
+      </template>
+      <div class="mt-6 border-t border-border pt-4 space-y-0.5">
+        <a class="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"><i data-lucide="life-buoy" class="h-4 w-4"></i> 帮助中心</a>
+        <a class="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"><i data-lucide="log-out" class="h-4 w-4"></i> 退出登录</a>
+      </div>
+    </nav>
+  </aside>
+
+  <div x-show="drawerOpen" x-cloak class="fixed inset-0 z-10 bg-foreground/40 lg:hidden" @click="drawerOpen = false"></div>
+
+  <!-- 主区 -->
+  <main class="lg:pl-60 pt-16 min-h-screen">
+    <div class="mx-auto max-w-6xl">
+
+      <!-- 仪表盘 -->
+      <div x-show="page === 'dashboard'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight" x-text="dashboard.title"></h1>
+            <p class="mt-1 text-sm text-muted-foreground" x-text="dashboard.subtitle"></p>
+          </div>
+          <button @click="go('list')" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 新建拜访</button>
+        </div>
+        <section class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <template x-for="kpi in dashboard.kpis" :key="kpi.label">
+            <div class="rounded-lg border border-border bg-card p-5">
+              <div class="flex items-center justify-between">
+                <div class="text-sm text-muted-foreground" x-text="kpi.label"></div>
+                <i :data-lucide="kpi.icon" class="h-4 w-4 text-muted-foreground"></i>
+              </div>
+              <div class="mt-2 text-2xl font-semibold" x-text="kpi.value"></div>
+              <div class="mt-1 flex items-center gap-1 text-xs" :class="(kpi.delta >= 0) ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'">
+                <i :data-lucide="(kpi.delta >= 0) ? 'trending-up' : 'trending-down'" class="h-3.5 w-3.5"></i>
+                <span x-text="(kpi.delta >= 0 ? '+' : '') + kpi.delta + '%'"></span>
+                <span class="text-muted-foreground">较上周</span>
+              </div>
+            </div>
+          </template>
+        </section>
+        <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div class="rounded-lg border border-border bg-card lg:col-span-2">
+            <div class="border-b border-border px-5 py-3"><h2 class="text-base font-semibold">最近动态</h2></div>
+            <ul class="divide-y divide-border">
+              <template x-for="act in dashboard.activities" :key="act.who + act.what">
+                <li class="flex items-start gap-3 px-5 py-3">
+                  <div class="mt-1 h-2 w-2 rounded-full" :class="act.color"></div>
+                  <div class="flex-1">
+                    <div class="text-sm"><span class="font-medium" x-text="act.who"></span> <span class="text-muted-foreground" x-text="act.what"></span></div>
+                    <div class="text-xs text-muted-foreground" x-text="act.when"></div>
+                  </div>
+                </li>
+              </template>
+            </ul>
+          </div>
+          <div class="rounded-lg border border-border bg-card">
+            <div class="border-b border-border px-5 py-3"><h2 class="text-base font-semibold">即将发生</h2></div>
+            <ul class="divide-y divide-border">
+              <template x-for="ev in dashboard.upcoming" :key="ev.title + ev.when">
+                <li class="px-5 py-3">
+                  <div class="flex items-center gap-2 text-sm font-medium"><i data-lucide="calendar" class="h-4 w-4 text-accent"></i><span x-text="ev.title"></span></div>
+                  <div class="mt-1 text-xs text-muted-foreground" x-text="ev.when"></div>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- 列表页 -->
+      <div x-show="page === 'list'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight" x-text="listView.title"></h1>
+            <p class="mt-1 text-sm text-muted-foreground" x-text="listView.subtitle"></p>
+          </div>
+          <button @click="openListCreate()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 新建拜访</button>
+        </div>
+        <div class="mb-4 flex items-center gap-3 flex-wrap">
+          <select x-model="listStatus" class="h-9 rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <option value="">全部状态</option>
+            <template x-for="opt in listView.status_options" :key="opt.value"><option :value="opt.value" x-text="opt.label"></option></template>
+          </select>
+          <div class="ml-auto text-xs text-muted-foreground">共 <span class="font-medium text-foreground" x-text="filteredListRows().length"></span> 条</div>
+        </div>
+        <div class="overflow-hidden rounded-lg border border-border bg-card">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead class="bg-muted/40 text-xs uppercase tracking-wide text-muted-foreground">
+                <tr>
+                  <template x-for="col in listView.columns" :key="col.key"><th class="px-4 py-3 text-left font-medium" x-text="col.label"></th></template>
+                  <th class="px-4 py-3 text-right font-medium">操作</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border">
+                <template x-for="row in filteredListRows()" :key="row.id">
+                  <tr class="hover:bg-muted/30">
+                    <td class="px-4 py-3 font-medium" x-text="row.title"></td>
+                    <td class="px-4 py-3 text-muted-foreground" x-text="row.customer"></td>
+                    <td class="px-4 py-3 text-muted-foreground" x-text="row.owner"></td>
+                    <td class="px-4 py-3"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" :class="row.status_class" x-text="row.status_label"></span></td>
+                    <td class="px-4 py-3 text-muted-foreground" x-text="row.date"></td>
+                    <td class="px-4 py-3 text-right">
+                      <div class="inline-flex items-center gap-1">
+                        <button @click="openListEdit(row.id)" class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted" aria-label="编辑"><i data-lucide="pencil" class="h-4 w-4"></i></button>
+                        <button @click="openListDetail(row.id)" class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted" aria-label="查看"><i data-lucide="eye" class="h-4 w-4"></i></button>
+                        <button @click="askDelete('list', row.id, row.title)" class="inline-flex h-8 w-8 items-center justify-center rounded-md text-destructive hover:bg-destructive/10" aria-label="删除"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+                <tr x-show="filteredListRows().length === 0">
+                  <td :colspan="listView.columns.length + 1" class="px-4 py-12 text-center text-sm text-muted-foreground">
+                    <i data-lucide="inbox" class="mx-auto mb-2 h-8 w-8"></i>
+                    <div>暂无数据,点击右上角「新建拜访」开始</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 看板 -->
+      <div x-show="page === 'kanban'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight" x-text="kanbanView.title"></h1>
+            <p class="mt-1 text-sm text-muted-foreground" x-text="kanbanView.subtitle"></p>
+          </div>
+          <button @click="openKanbanCreate()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 新建卡片</button>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <template x-for="col in kanbanView.columns" :key="col.id">
+            <div class="rounded-lg border border-border bg-muted/30 p-3" @dragover.prevent="dragOverCol = col.id" @dragleave="if (dragOverCol === col.id) dragOverCol = ''" @drop.prevent="onDropCol(col.id)" :class="dragOverCol === col.id ? 'ring-2 ring-primary/40' : ''">
+              <div class="mb-3 flex items-center justify-between px-1">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-full" :class="col.color"></span>
+                  <h3 class="text-sm font-semibold" x-text="col.title"></h3>
+                  <span class="text-xs text-muted-foreground" x-text="kanbanCards(col.id).length"></span>
+                </div>
+                <button @click="openKanbanCreate(col.id)" class="inline-flex h-6 w-6 items-center justify-center rounded-md hover:bg-background" aria-label="新增"><i data-lucide="plus" class="h-3.5 w-3.5"></i></button>
+              </div>
+              <div class="space-y-2 min-h-[60px]">
+                <template x-for="card in kanbanCards(col.id)" :key="card.id">
+                  <div class="rounded-md border border-border bg-card p-3 shadow-sm cursor-grab active:cursor-grabbing" draggable="true" @dragstart="onDragStart($event, card.id, col.id)" @dragend="onDragEnd()">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="text-sm font-medium leading-snug" x-text="card.title"></div>
+                      <div class="flex items-center gap-0.5">
+                        <button @click="openKanbanEdit(card.id)" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-muted-foreground hover:bg-muted" aria-label="编辑"><i data-lucide="pencil" class="h-3.5 w-3.5"></i></button>
+                        <button @click="askDelete('kanban', card.id, card.title)" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-destructive hover:bg-destructive/10" aria-label="删除"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i></button>
+                      </div>
+                    </div>
+                    <div class="mt-1 text-xs text-muted-foreground" x-text="card.subtitle"></div>
+                    <div class="mt-2 flex items-center justify-between">
+                      <span class="inline-flex items-center rounded px-1.5 py-0.5 text-xs font-medium" :class="card.tag_class" x-text="card.tag"></span>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="kanbanCards(col.id).length === 0" class="rounded-md border border-dashed border-border py-6 text-center text-xs text-muted-foreground">拖动卡片到此处,或点击 + 新建</div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- 详情页 -->
+      <div x-show="page === 'detail'" class="px-6 py-8">
+        <div class="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+          <button @click="go('list')" class="inline-flex items-center gap-1 hover:text-foreground"><i data-lucide="arrow-left" class="h-4 w-4"></i> 返回列表</button>
+        </div>
+        <div class="mb-6 flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-2xl font-semibold tracking-tight" x-text="activeListRow().title || '详情'"></h1>
+              <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" :class="activeListRow().status_class" x-text="activeListRow().status_label"></span>
+            </div>
+            <p class="mt-1 text-sm text-muted-foreground">客户 <span class="font-medium text-foreground" x-text="activeListRow().customer"></span> · 负责人 <span x-text="activeListRow().owner"></span> · <span x-text="activeListRow().date"></span></p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button @click="openListEdit(activeListRow().id)" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="pencil" class="h-4 w-4"></i> 编辑</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <div class="lg:col-span-2 rounded-lg border border-border bg-card p-5">
+            <h2 class="mb-3 text-base font-semibold">拜访纪要</h2>
+            <p class="text-sm leading-relaxed text-foreground/90" x-text="activeListRow().notes || '暂无纪要内容'"></p>
+          </div>
+          <aside class="space-y-4">
+            <div class="rounded-lg border border-border bg-card p-5">
+              <h3 class="mb-3 text-sm font-semibold">属性</h3>
+              <dl class="space-y-2 text-sm">
+                <div class="flex justify-between"><dt class="text-muted-foreground">客户</dt><dd class="font-medium" x-text="activeListRow().customer"></dd></div>
+                <div class="flex justify-between"><dt class="text-muted-foreground">负责人</dt><dd class="font-medium" x-text="activeListRow().owner"></dd></div>
+                <div class="flex justify-between"><dt class="text-muted-foreground">日期</dt><dd class="font-medium" x-text="activeListRow().date"></dd></div>
+                <div class="flex justify-between"><dt class="text-muted-foreground">状态</dt><dd><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" :class="activeListRow().status_class" x-text="activeListRow().status_label"></span></dd></div>
+              </dl>
+            </div>
+          </aside>
+        </div>
+      </div>
+
+      <!-- 设置 -->
+      <div x-show="page === 'settings'" class="px-6 py-8">
+        <div class="mb-6">
+          <h1 class="text-2xl font-semibold tracking-tight">设置</h1>
+          <p class="mt-1 text-sm text-muted-foreground">管理你的偏好与账号</p>
+        </div>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-[220px_1fr]">
+          <nav class="space-y-1">
+            <button class="flex w-full items-center gap-2 rounded-md bg-muted px-3 py-2 text-sm font-medium text-foreground"><i data-lucide="user" class="h-4 w-4"></i> 个人资料</button>
+            <button class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"><i data-lucide="bell" class="h-4 w-4"></i> 通知</button>
+            <button class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"><i data-lucide="palette" class="h-4 w-4"></i> 外观</button>
+            <button @click="exportData()" class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"><i data-lucide="download" class="h-4 w-4"></i> 导出数据</button>
+          </nav>
+          <div class="rounded-lg border border-border bg-card p-6">
+            <h2 class="text-base font-semibold">个人资料</h2>
+            <div class="mt-4 space-y-4 max-w-md">
+              <div><label class="block text-sm font-medium">显示名称</label><input type="text" :value="product.user_name" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" /></div>
+              <div><label class="block text-sm font-medium">邮箱</label><input type="email" :value="product.user_email" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" /></div>
+              <div class="flex justify-end gap-2 pt-2"><button class="inline-flex h-9 items-center rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90">保存</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 移动端遮罩 -->
+  <div x-show="drawerOpen" x-cloak class="fixed inset-0 z-10 bg-foreground/40 lg:hidden" @click="drawerOpen = false"></div>
+
+  <!-- Modal: 列表行 新建/编辑 -->
+  <div x-show="modal.open && modal.kind === 'list'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="closeModal()">
+    <div class="w-full max-w-md rounded-lg border border-border bg-background shadow-xl" @click.outside="closeModal()">
+      <div class="flex items-center justify-between border-b border-border px-5 py-3">
+        <h3 class="text-base font-semibold" x-text="modal.mode === 'edit' ? '编辑拜访' : '新建拜访'"></h3>
+        <button @click="closeModal()" class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted" aria-label="关闭"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <form @submit.prevent="saveListRow()" class="space-y-4 px-5 py-4">
+        <template x-for="field in listView.form_fields" :key="field.name">
+          <div>
+            <label class="block text-sm font-medium" x-text="field.label"></label>
+            <template x-if="field.type === 'textarea'">
+              <textarea x-model="modal.form[field.name]" rows="3" :placeholder="field.placeholder || ''" class="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"></textarea>
+            </template>
+            <template x-if="field.type === 'select'">
+              <select x-model="modal.form[field.name]" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+                <template x-for="opt in (field.options || [])" :key="opt.value"><option :value="opt.value" x-text="opt.label"></option></template>
+              </select>
+            </template>
+            <template x-if="field.type !== 'textarea' && field.type !== 'select'">
+              <input x-model="modal.form[field.name]" :type="field.type || 'text'" :placeholder="field.placeholder || ''" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            </template>
+          </div>
+        </template>
+        <div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+          <button type="button" @click="closeModal()" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+          <button type="submit" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="check" class="h-4 w-4"></i> 保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: 看板卡片 新建/编辑 -->
+  <div x-show="modal.open && modal.kind === 'kanban'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="closeModal()">
+    <div class="w-full max-w-md rounded-lg border border-border bg-background shadow-xl" @click.outside="closeModal()">
+      <div class="flex items-center justify-between border-b border-border px-5 py-3">
+        <h3 class="text-base font-semibold" x-text="modal.mode === 'edit' ? '编辑卡片' : '新建卡片'"></h3>
+        <button @click="closeModal()" class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted" aria-label="关闭"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <form @submit.prevent="saveKanbanCard()" class="space-y-4 px-5 py-4">
+        <template x-for="field in kanbanView.form_fields" :key="field.name">
+          <div>
+            <label class="block text-sm font-medium" x-text="field.label"></label>
+            <template x-if="field.type === 'textarea'">
+              <textarea x-model="modal.form[field.name]" rows="2" :placeholder="field.placeholder || ''" class="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"></textarea>
+            </template>
+            <template x-if="field.type === 'select'">
+              <select x-model="modal.form[field.name]" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+                <template x-for="opt in (field.options || [])" :key="opt.value"><option :value="opt.value" x-text="opt.label"></option></template>
+              </select>
+            </template>
+            <template x-if="field.type !== 'textarea' && field.type !== 'select'">
+              <input x-model="modal.form[field.name]" :type="field.type || 'text'" :placeholder="field.placeholder || ''" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+            </template>
+          </div>
+        </template>
+        <div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+          <button type="button" @click="closeModal()" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+          <button type="submit" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="check" class="h-4 w-4"></i> 保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 删除确认 -->
+  <div x-show="confirm.open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="confirm.open = false">
+    <div class="w-full max-w-sm rounded-lg border border-border bg-background p-5 shadow-xl" @click.outside="confirm.open = false">
+      <div class="flex items-start gap-3">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive"><i data-lucide="alert-triangle" class="h-5 w-5"></i></div>
+        <div class="flex-1">
+          <h3 class="text-base font-semibold">确认删除</h3>
+          <p class="mt-1 text-sm text-muted-foreground">确定要删除 <span class="font-medium text-foreground" x-text="confirm.title"></span> 吗?此操作无法撤销。</p>
+        </div>
+      </div>
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button @click="confirm.open = false" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+        <button @click="doDelete()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-destructive px-3 text-sm font-medium text-destructive-foreground hover:opacity-90"><i data-lucide="trash-2" class="h-4 w-4"></i> 删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 初始数据 -->
+  <script>
+    window.__APP_DATA__ = {
+      product: { name: "销售拜访纪要", storage_key: "sales-visit-recorder", avatar_initial: "陈", user_name: "陈昊", user_email: "chenhao@example.com" },
+      nav_groups: [
+        { id: "main", label: "工作台", items: [
+          { page: "dashboard", label: "拜访概览", icon: "layout-dashboard" },
+        ]},
+        { id: "biz", label: "拜访管理", items: [
+          { page: "list", label: "拜访列表", icon: "list" },
+          { page: "kanban", label: "跟进看板", icon: "kanban-square" },
+          { page: "detail", label: "拜访详情", icon: "file-text" },
+        ]},
+        { id: "sys", label: "系统", items: [
+          { page: "settings", label: "设置", icon: "settings" },
+        ]},
+      ],
+      dashboard: {
+        title: "拜访概览",
+        subtitle: "今天的客户动态与待办",
+        kpis: [
+          { label: "本周拜访", value: "12", delta: 8, icon: "users" },
+          { label: "新增需求", value: "5", delta: 25, icon: "lightbulb" },
+          { label: "成交订单", value: "3", delta: -12, icon: "check-circle" },
+          { label: "跟进中", value: "8", delta: 4, icon: "clock" },
+        ],
+        activities: [
+          { who: "陈昊", what: "完成了 ABC 科技的客户拜访", when: "10 分钟前", color: "bg-emerald-500" },
+          { who: "林静", what: "创建了一条新拜访纪要", when: "1 小时前", color: "bg-blue-500" },
+          { who: "张伟", what: "把「XYZ 集团」从跟进中改为成单", when: "今天 09:30", color: "bg-amber-500" },
+          { who: "陈昊", what: "给「DEF 金融」添加了备注", when: "昨天", color: "bg-indigo-500" },
+        ],
+        upcoming: [
+          { title: "拜访 ABC 科技 - 张总", when: "今天 14:00" },
+          { title: "电话回访 XYZ 集团", when: "今天 16:30" },
+          { title: "产品演示 DEF 金融", when: "明天 10:00" },
+        ],
+      },
+      list_view: {
+        title: "拜访列表",
+        subtitle: "管理所有客户拜访记录",
+        columns: [
+          { key: "title", label: "拜访主题" },
+          { key: "customer", label: "客户" },
+          { key: "owner", label: "负责人" },
+          { key: "status", label: "状态" },
+          { key: "date", label: "日期" },
+        ],
+        status_options: [
+          { value: "new", label: "已计划", cls: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300" },
+          { value: "active", label: "进行中", cls: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" },
+          { value: "won", label: "已成交", cls: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" },
+          { value: "lost", label: "已流失", cls: "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300" },
+        ],
+        form_fields: [
+          { name: "title", label: "拜访主题", type: "text", placeholder: "例:Q2 新品演示", required: true },
+          { name: "customer", label: "客户", type: "text", placeholder: "例:ABC 科技", required: true },
+          { name: "owner", label: "负责人", type: "text", placeholder: "例:陈昊", required: true },
+          { name: "status", label: "状态", type: "select", options: [ { value: "new", label: "已计划" }, { value: "active", label: "进行中" }, { value: "won", label: "已成交" }, { value: "lost", label: "已流失" } ] },
+          { name: "date", label: "日期", type: "date" },
+          { name: "notes", label: "拜访纪要", type: "textarea", placeholder: "客户痛点 / 决策人 / 下一步..." },
+        ],
+        rows: [
+          { id: 1, title: "Q2 新品演示", customer: "ABC 科技", owner: "陈昊", status: "active", status_label: "进行中", status_class: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300", date: "2026-06-08", notes: "客户对自动化模块很感兴趣,决策人是张总,需要技术对接。" },
+          { id: 2, title: "续约沟通", customer: "XYZ 集团", owner: "陈昊", status: "won", status_label: "已成交", status_class: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300", date: "2026-06-05", notes: "续签 2 年,合同金额 86 万。" },
+          { id: 3, title: "需求调研", customer: "DEF 金融", owner: "林静", status: "new", status_label: "已计划", status_class: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300", date: "2026-06-12", notes: "" },
+          { id: 4, title: "产品介绍", customer: "GHI 制造", owner: "张伟", status: "lost", status_label: "已流失", status_class: "bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300", date: "2026-05-28", notes: "客户选择竞品,价格因素。" },
+        ],
+      },
+      kanban_view: {
+        title: "跟进看板",
+        subtitle: "拖动卡片切换阶段",
+        columns: [
+          { id: "todo", title: "待跟进", color: "bg-slate-500", cards: [
+            { id: 101, title: "回访 GHI 制造", subtitle: "陈昊 · 上周", tag: "回访", tag_class: "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300" },
+            { id: 102, title: "邀请 JKL 物流参加 demo", subtitle: "林静 · 明天", tag: "邀约", tag_class: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" },
+          ]},
+          { id: "doing", title: "沟通中", color: "bg-amber-500", cards: [
+            { id: 201, title: "ABC 科技 - 方案对齐", subtitle: "陈昊 · 3 天", tag: "方案", tag_class: "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300" },
+          ]},
+          { id: "done", title: "已成交", color: "bg-emerald-500", cards: [
+            { id: 301, title: "XYZ 集团续约", subtitle: "陈昊 · 完成", tag: "续约", tag_class: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" },
+            { id: 302, title: "MNO 食品首单", subtitle: "张伟 · 完成", tag: "首单", tag_class: "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300" },
+          ]},
+        ],
+        form_fields: [
+          { name: "title", label: "卡片标题", type: "text", required: true },
+          { name: "subtitle", label: "描述", type: "text", placeholder: "负责人 / 时间 / 备注" },
+          { name: "tag", label: "标签", type: "text", placeholder: "例:回访" },
+        ],
+      },
+    };
+  </script>
+
+  <!-- Alpine app() -->
+  <script>
+    function app() {
+      const D = window.__APP_DATA__ || {};
+      return {
+        product: D.product || {},
+        navGroups: D.nav_groups || [],
+        dashboard: D.dashboard || { kpis: [], activities: [], upcoming: [] },
+        listView: D.list_view || { columns: [], rows: [], status_options: [], form_fields: [] },
+        kanbanView: D.kanban_view || { columns: [], form_fields: [] },
+        page: "dashboard",
+        drawerOpen: false,
+        groupOpen: {},
+        activeListId: null,
+        dark: false,
+        listQuery: "",
+        listStatus: "",
+        dragCardId: null,
+        dragOverCol: null,
+        modal: { open: false, kind: "", mode: "", form: {} },
+        confirm: { open: false, kind: "", id: null, title: "" },
+        init() {
+          try { const s = localStorage.getItem(this.themeKey()); this.dark = s === "dark" || (s === null && window.matchMedia("(prefers-color-scheme: dark)").matches); } catch (e) { this.dark = false; }
+          this.applyTheme();
+          (this.navGroups || []).forEach(g => { this.groupOpen[g.id] = true; });
+          this.loadAll();
+          window.addEventListener("hashchange", () => this.syncPageFromHash());
+          this.syncPageFromHash();
+          this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} });
+        },
+        themeKey() { return (this.product.storage_key || "app") + "__theme"; },
+        applyTheme() { document.documentElement.classList.toggle("dark", this.dark); },
+        toggleTheme() { this.dark = !this.dark; this.applyTheme(); try { localStorage.setItem(this.themeKey(), this.dark ? "dark" : "light"); } catch (e) {} },
+        go(page) { this.page = page; this.drawerOpen = false; if (window.location.hash !== "#" + page) { window.location.hash = page; } this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        syncPageFromHash() { const h = (window.location.hash || "#dashboard").slice(1); const valid = ["dashboard", "list", "kanban", "detail", "settings"]; this.page = valid.includes(h) ? h : "dashboard"; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        toggleGroup(id) { this.groupOpen[id] = !this.groupOpen[id]; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        filteredListRows() { const q = (this.listQuery || "").trim().toLowerCase(); return (this.listView.rows || []).filter(r => { const matchQ = !q || (r.title || "").toLowerCase().includes(q) || (r.customer || "").toLowerCase().includes(q) || (r.owner || "").toLowerCase().includes(q); const matchS = !this.listStatus || r.status === this.listStatus; return matchQ && matchS; }); },
+        activeListRow() { if (this.activeListId == null) return {}; return (this.listView.rows || []).find(r => r.id === this.activeListId) || {}; },
+        openListCreate() { this.modal = { open: true, kind: "list", mode: "create", form: this.blankListForm() }; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        openListEdit(id) { const row = (this.listView.rows || []).find(r => r.id === id); if (!row) return; this.modal = { open: true, kind: "list", mode: "edit", form: { ...row } }; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        openListDetail(id) { this.activeListId = id; this.go("detail"); },
+        blankListForm() { const f = {}; (this.listView.form_fields || []).forEach(field => { f[field.name] = ""; }); return f; },
+        saveListRow() {
+          const f = this.modal.form; if (!f) return;
+          const statusOpt = (this.listView.status_options || []).find(o => o.value === f.status);
+          const statusLabel = statusOpt ? statusOpt.label : (f.status || "");
+          const statusClass = statusOpt ? statusOpt.cls : "bg-muted text-muted-foreground";
+          if (this.modal.mode === "edit" && f.id != null && f.id !== "") {
+            const idx = (this.listView.rows || []).findIndex(r => r.id === f.id);
+            if (idx >= 0) { this.listView.rows[idx] = { ...this.listView.rows[idx], ...f, status_label: statusLabel, status_class: statusClass }; }
+          } else {
+            const newId = Date.now() + Math.floor(Math.random() * 1000);
+            this.listView.rows = this.listView.rows || [];
+            this.listView.rows.unshift({ ...f, id: newId, status_label: statusLabel, status_class: statusClass, date: f.date || new Date().toISOString().slice(0, 10) });
+          }
+          this.saveAll(); this.closeModal();
+        },
+        kanbanCards(colId) { const col = (this.kanbanView.columns || []).find(c => c.id === colId); return col ? (col.cards || []) : []; },
+        openKanbanCreate(colId) { const defaultCol = colId || (this.kanbanView.columns[0] && this.kanbanView.columns[0].id) || ""; this.modal = { open: true, kind: "kanban", mode: "create", form: { ...this.blankKanbanForm(), column: defaultCol } }; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        openKanbanEdit(id) { let card = null; for (const c of (this.kanbanView.columns || [])) { const found = (c.cards || []).find(x => x.id === id); if (found) { card = found; break; } } if (!card) return; this.modal = { open: true, kind: "kanban", mode: "edit", form: { ...card } }; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        blankKanbanForm() { const f = {}; (this.kanbanView.form_fields || []).forEach(field => { f[field.name] = ""; }); return f; },
+        saveKanbanCard() {
+          const f = this.modal.form; if (!f) return;
+          if (this.modal.mode === "edit" && f.id != null && f.id !== "") {
+            for (const c of (this.kanbanView.columns || [])) { c.cards = (c.cards || []).filter(x => x.id !== f.id); }
+            const col = this.kanbanView.columns.find(c => c.id === f.column) || this.kanbanView.columns[0];
+            col.cards = col.cards || []; col.cards.unshift({ ...f });
+          } else {
+            const newId = Date.now() + Math.floor(Math.random() * 1000);
+            const col = this.kanbanView.columns.find(c => c.id === f.column) || this.kanbanView.columns[0];
+            col.cards = col.cards || []; col.cards.unshift({ ...f, id: newId, column: col.id });
+          }
+          this.saveAll(); this.closeModal();
+        },
+        onDragStart(ev, cardId, fromCol) { this.dragCardId = cardId; try { ev.dataTransfer.effectAllowed = "move"; ev.dataTransfer.setData("text/plain", String(cardId)); } catch (e) {} },
+        onDragEnd() { this.dragCardId = null; this.dragOverCol = null; },
+        onDropCol(toCol) {
+          const cardId = this.dragCardId; if (!cardId || !toCol) { this.onDragEnd(); return; }
+          let card = null;
+          for (const c of (this.kanbanView.columns || [])) { const idx = (c.cards || []).findIndex(x => x.id === cardId); if (idx >= 0) { [card] = c.cards.splice(idx, 1); break; } }
+          if (!card) { this.onDragEnd(); return; }
+          const toObj = this.kanbanView.columns.find(c => c.id === toCol); if (toObj) { toObj.cards = toObj.cards || []; toObj.cards.push({ ...card, column: toCol }); }
+          this.onDragEnd(); this.saveAll();
+        },
+        askDelete(kind, id, title) { this.confirm = { open: true, kind, id, title: title || "此项" }; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        doDelete() {
+          const k = this.confirm.kind, id = this.confirm.id;
+          if (k === "list") this.listView.rows = (this.listView.rows || []).filter(r => r.id !== id);
+          else if (k === "kanban") (this.kanbanView.columns || []).forEach(c => { c.cards = (c.cards || []).filter(x => x.id !== id); });
+          this.saveAll(); this.confirm = { open: false, kind: "", id: null, title: "" };
+        },
+        closeModal() { this.modal = { open: false, kind: "", mode: "", form: {} }; },
+        dataKey() { return (this.product.storage_key || "app") + "__data_v1"; },
+        saveAll() { try { localStorage.setItem(this.dataKey(), JSON.stringify({ list_rows: this.listView.rows || [], kanban_columns: this.kanbanView.columns || [] })); } catch (e) {} },
+        loadAll() { try { const raw = localStorage.getItem(this.dataKey()); if (!raw) return; const d = JSON.parse(raw); if (Array.isArray(d.list_rows)) this.listView.rows = d.list_rows; if (Array.isArray(d.kanban_columns)) this.kanbanView.columns = d.kanban_columns; } catch (e) {} },
+        exportData() { try { const blob = new Blob([JSON.stringify({ list_rows: this.listView.rows || [], kanban_columns: this.kanbanView.columns || [], exported_at: new Date().toISOString() }, null, 2)], { type: "application/json" }); const url = URL.createObjectURL(blob); const a = document.createElement("a"); a.href = url; a.download = (this.product.storage_key || "app") + "-export.json"; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); } catch (e) {} },
+      };
+    }
+  </script>
+
+  <script>
+    document.addEventListener("alpine:initialized", () => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} });
+  </script>
+</body>
+</html>
