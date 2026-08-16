@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>README.md · 快速开始</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } };
+  </script>
+  <style>
+    :root { --bg: 0 0% 100%; --fg: 222.2 84% 4.9%; --card: 0 0% 100%; --border: 214.3 31.8% 91.4%; --muted: 210 40% 96.1%; }
+    .dark { --bg: 222.2 84% 4.9%; --fg: 210 40% 98%; --card: 222.2 84% 6.5%; --border: 217.2 32.6% 17.5%; --muted: 217.2 32.6% 12.5%; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: hsl(var(--bg)); color: hsl(var(--fg)); }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    code { font-family: 'JetBrains Mono', monospace; }
+    h1, h2, h3 { scroll-margin-top: 5rem; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; }
+    thead { background: hsl(var(--muted)); }
+    tbody tr:hover { background: hsl(var(--muted)); }
+  </style>
+</head>
+<body>
+  <div class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur" style="height:56px; display:flex; align-items:center;">
+    <div class="max-w-4xl mx-auto px-6 w-full flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          返回教学门户
+        </a>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm font-mono opacity-50">README.md · 快速开始</span>
+      </div>
+      <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('md-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm hover:opacity-80 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-10" x-data="{ dark: localStorage.getItem('md-theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="document.documentElement.classList.toggle('dark', dark)">
+    <div class="prose prose-slate dark:prose-invert max-w-none">
+      <h1 id="业务助手智能体businessassistantagent" class="font-bold mb-3 mt-6 text-3xl">业务助手智能体 (Business Assistant Agent)</h1>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">训练企业员工用 Codex 开发网页应用,解决具体业务问题。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">零代码,几轮对话,出 PRD + 可用 Demo,持续迭代。</blockquote>
+
+<h2 id="这是什么" class="font-bold mb-3 mt-6 text-2xl">这是什么</h2>
+
+<p class="mb-3 text-sm leading-relaxed">一个 Codex Skill,帮企业员工把模糊的业务问题一步步变成可用的网页应用。</p>
+
+<p class="mb-3 text-sm leading-relaxed">学员不需要写代码,只需要用自然语言描述业务需求。Skill 会自动生成:</p>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">产品文档(PRD)</strong>:写文件,可分享给同事审阅</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">网页 Demo</strong>:单文件 HTML,双击即开,数据存浏览器本地</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">持续迭代</strong>:可以一直改 PRD / 改应用,支持 4 种典型往返场景</li>
+
+<p class="mb-3 text-sm leading-relaxed">适用场景:</p>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">培训</strong>:企业员工几小时就能上手,做出自己业务部门的工具</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">内部工具</strong>:替代 Excel / 微信群,几分钟搭一个原型</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">业务验证</strong>:新想法做个 demo 跑 2 周,再决定要不要正式开发</li>
+
+<h2 id="装上codex怎么用" class="font-bold mb-3 mt-6 text-2xl">装上 Codex 怎么用</h2>
+
+<h3 id="1复制到codexskill目录" class="font-bold mb-3 mt-6 text-xl">1. 复制到 Codex Skill 目录</h3>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-bash">
+cp -r business-assistant-agent $CODEX_HOME/skills/
+</code></pre>
+
+<h3 id="2启动codex在对话里说" class="font-bold mb-3 mt-6 text-xl">2. 启动 Codex,在对话里说</h3>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">我是 HR 专员,平时用 Excel 管候选人太乱了,想搞个工具</blockquote>
+
+<p class="mb-3 text-sm leading-relaxed">或者直接说:</p>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">用业务助手智能体做一个销售拜访管理工具</blockquote>
+
+<h3 id="3跟着skill走4个阶段" class="font-bold mb-3 mt-6 text-xl">3. 跟着 Skill 走 4 个阶段</h3>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">阶段一</strong> 需求发现(Skill 会问 2-3 轮)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">阶段二</strong> PRD 自动生成(Skill 写到文件,你审阅)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">阶段三</strong> Demo 自动生成(单文件 HTML,你打开看)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">阶段四</strong> 持续迭代(改 PRD / 改对话 / 改应用,一直循环)</li>
+
+<h2 id="文件结构" class="font-bold mb-3 mt-6 text-2xl">文件结构</h2>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+business-assistant-agent/
+├── SKILL.md                      # Skill 主文档(给 Codex 读)
+├── CHANGELOG.md                  # 版本历史
+├── README.md                     # 本文件
+├── agents/openai.yaml            # Skill 清单(触发词 + 描述)
+├── assets/                       # 模板 + 设计 token
+│   ├── prd-template.md
+│   └── design-tokens.json
+├── references/                   # Skill 内部知识库(7 个 .md)
+├── examples/                     # 学员材料 + 讲师材料
+│   ├── README.md                 # 学员快速开始
+│   ├── walkthrough-hr-...md      # 完整演练(老师讲你看)
+│   ├── student-checklist.md      # 作业 checklist(自己做)
+│   ├── instructor-guide.md       # 讲师课程大纲
+│   └── instructor-rubric.md      # 讲师评分量表
+├── scripts/                      # 辅助脚本
+│   ├── render_prd.py
+│   └── validate_prd.py
+└── work/
+    └── smoke_test.py             # 静态校验(78 项)
+</code></pre>
+
+<h2 id="给学员" class="font-bold mb-3 mt-6 text-2xl">给学员</h2>
+
+<li class="ml-4 mb-1"><a href="examples/README.md" class="text-blue-500 hover:underline">examples/README.md</a> - 2 分钟快速开始</li>
+<li class="ml-4 mb-1"><a href="examples/walkthrough-hr-recruitment.md" class="text-blue-500 hover:underline">examples/walkthrough-hr-recruitment.md</a> - 22KB 完整演练</li>
+<li class="ml-4 mb-1"><a href="examples/student-checklist.md" class="text-blue-500 hover:underline">examples/student-checklist.md</a> - 142 项作业 checklist</li>
+
+<h2 id="给讲师" class="font-bold mb-3 mt-6 text-2xl">给讲师</h2>
+
+<li class="ml-4 mb-1"><a href="examples/instructor-guide.md" class="text-blue-500 hover:underline">examples/instructor-guide.md</a> - 1-2 天课程大纲</li>
+<li class="ml-4 mb-1"><a href="examples/instructor-rubric.md" class="text-blue-500 hover:underline">examples/instructor-rubric.md</a> - 100 分制评分量表</li>
+
+<h2 id="验证安装" class="font-bold mb-3 mt-6 text-2xl">验证安装</h2>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-bash">
+cd $CODEX_HOME/skills/business-assistant-agent
+python work/smoke_test.py
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed">期望输出:<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">总计: 78/78</code></p>
+
+<h2 id="3个参考demo" class="font-bold mb-3 mt-6 text-2xl">3 个参考 Demo</h2>
+
+<p class="mb-3 text-sm leading-relaxed">在 Skill 自带的 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/</code> 下(讲师分发时一起打包)。每个 demo 都已带真实种子数据(销售 4 条拜访、HR 4 个需求 + 6 个候选人 + 3 场面试 + 3 个入职、会议 5 场 + 9 个行动项),双击 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">index.html</code> 即可看到完整业务效果,无需先造数据。</p>
+
+
+<p class="mb-3 text-sm leading-relaxed">每个 demo 都是单文件 HTML + README.md,双击即开,无任何依赖。</p>
+
+<h2 id="技术原理1分钟版本" class="font-bold mb-3 mt-6 text-2xl">技术原理(1 分钟版本)</h2>
+
+<li class="ml-4 mb-1">生成内容:LLM 直接写单文件 HTML</li>
+<li class="ml-4 mb-1">CSS:Tailwind(CDN)</li>
+<li class="ml-4 mb-1">交互:Alpine.js 3(CDN)</li>
+<li class="ml-4 mb-1">图标:lucide(CDN)</li>
+<li class="ml-4 mb-1">存储:浏览器 localStorage</li>
+<li class="ml-4 mb-1">字体:Inter / JetBrains Mono(Google Fonts)</li>
+
+<p class="mb-3 text-sm leading-relaxed">学员不需要懂任何代码。如果想看懂实现,所有 HTML 文件都可以在浏览器「查看源代码」看到完整结构。</p>
+
+<h2 id="常见问题" class="font-bold mb-3 mt-6 text-2xl">常见问题</h2>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:学员装 Skill 失败怎么办?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:让学员跑 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">python work/smoke_test.py</code>,78/78 通过就是装好了。失败的话看具体哪 26 项不过。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:生成出来的 Demo 怎么部署?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:把 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/index.html</code> 单文件直接发到内网(Confluence / 钉钉 / 飞书),或扔到 Vercel / Netlify 静态托管,链接发同事。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:学员数据丢了怎么办?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:数据在浏览器 localStorage 里,清浏览器缓存会丢。教学员在「设置」页用「导出数据」按钮定期备份。</p>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">Q:Skill 能做原生 App / 后端 / 多人协作吗?</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">A:不能。本 Skill 范围是「单浏览器 + localStorage + 单文件 HTML」。要做上述能力需要另外的 Skill 或后端。</p>
+
+<h2 id="更多信息" class="font-bold mb-3 mt-6 text-2xl">更多信息</h2>
+
+<li class="ml-4 mb-1">详细工作流:看 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">SKILL.md</code></li>
+<li class="ml-4 mb-1">4 场景路由规则:看 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code></li>
+<li class="ml-4 mb-1">CRUD 实现规范:看 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/crud-pattern.md</code></li>
+
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 dark:border-slate-700 mt-12">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center text-sm">
+      <div><a href="skill.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>SKILL.md · Skill 主文档</a></div><div><a href="changelog.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600">CHANGELOG.md · 版本历史<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </div>
+  </div>
+
+  <script>
+    try {
+      const t = localStorage.getItem('md-theme');
+      if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>
