@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>招聘管理后台 · 业务助手智能体 Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+<style>
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --border: 214.3 31.8% 91.4%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --success: 142.1 76.2% 36.3%;
+    --destructive: 0 84.2% 60.2%;
+    --warning: 38 92% 50%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 222.2 47.4% 6%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 47.4% 8%;
+    --border: 217.2 32.6% 17.5%;
+    --primary: 217 91% 60%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --success: 142.1 70% 45%;
+    --destructive: 0 72% 51%;
+  }
+  body { background: hsl(var(--background)); color: hsl(var(--foreground)); font-family: Inter, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  [x-cloak] { display: none !important; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 4px; }
+</style>
+<script>
+  if (window.matchMedia('(prefers-color-scheme: dark)').matches) { document.documentElement.classList.add('dark'); }
+  tailwind.config = {
+    darkMode: 'class',
+    theme: { extend: {
+      colors: {
+        background: 'hsl(var(--background))', foreground: 'hsl(var(--foreground))', card: 'hsl(var(--card))', border: 'hsl(var(--border))',
+        primary: { DEFAULT: 'hsl(var(--primary))', foreground: 'hsl(var(--primary-foreground))' },
+        muted: { DEFAULT: 'hsl(var(--muted))', foreground: 'hsl(var(--muted-foreground))' },
+        success: 'hsl(var(--success))', destructive: { DEFAULT: 'hsl(var(--destructive))', foreground: 'hsl(var(--primary-foreground))' }, warning: 'hsl(var(--warning))',
+      },
+      borderRadius: { lg: 'var(--radius)', md: 'calc(var(--radius) - 2px)', sm: 'calc(var(--radius) - 4px)' },
+    } },
+    safelist: ['bg-emerald-100','text-emerald-700','bg-emerald-500/20','text-emerald-300','bg-amber-100','text-amber-700','bg-amber-500/20','text-amber-300','bg-rose-100','text-rose-700','bg-rose-500/20','text-rose-300','bg-blue-100','text-blue-700','bg-blue-500/20','text-blue-300','bg-slate-100','text-slate-700','bg-slate-500/20','text-slate-300','bg-indigo-100','text-indigo-700','bg-indigo-500/20','text-indigo-300','bg-violet-100','text-violet-700','bg-violet-500/20','text-violet-300'],
+  };
+</script>
+</head>
+<body x-data="app()" x-init="init()" x-cloak>
+
+  <!-- 顶部栏 -->
+  <header class="fixed inset-x-0 top-0 z-30 h-16 border-b border-border bg-background/80 backdrop-blur">
+    <div class="flex h-full items-center justify-between px-4 sm:px-6">
+      <div class="flex items-center gap-3">
+        <button @click="drawerOpen = !drawerOpen" class="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-muted lg:hidden" aria-label="打开菜单"><i data-lucide="menu" class="h-5 w-5"></i></button>
+        <div class="flex items-center gap-2 font-semibold"><i data-lucide="users-round" class="h-5 w-5 text-primary"></i><span>招聘管理后台</span></div>
+      </div>
+      <div class="hidden flex-1 px-8 md:block max-w-md">
+        <div class="relative">
+          <i data-lucide="search" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"></i>
+          <input x-model="listQuery" type="text" placeholder="搜索职位或候选人..." class="h-9 w-full rounded-md border border-border bg-muted/50 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:bg-background focus:outline-none" />
+        </div>
+      </div>
+      <div class="flex items-center gap-1">
+        <button @click="toggleTheme()" class="inline-flex h-9 w-9 items-center justify-center rounded-md hover:bg-muted" :aria-label="dark ? '切换到浅色' : '切换到深色'"><i :data-lucide="dark ? 'sun' : 'moon'" class="h-4 w-4"></i></button>
+        <div class="ml-2 flex items-center gap-2 rounded-full border border-border p-0.5 pr-3">
+          <div class="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground" x-text="product.avatar_initial"></div>
+          <span class="hidden text-sm font-medium sm:inline" x-text="product.user_name"></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 左侧导航 -->
+  <aside :class="drawerOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed inset-y-0 left-0 z-20 w-60 transform border-r border-border bg-background pt-16 transition-transform duration-200 lg:translate-x-0">
+    <nav class="h-full overflow-y-auto p-3 space-y-1">
+      <template x-for="group in navGroups" :key="group.id">
+        <div>
+          <button @click="toggleGroup(group.id)" class="flex w-full items-center justify-between rounded-md px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground">
+            <span x-text="group.label"></span>
+            <i :data-lucide="groupOpen[group.id] ? 'chevron-down' : 'chevron-right'" class="h-3.5 w-3.5"></i>
+          </button>
+          <div x-show="groupOpen[group.id]" class="mt-1 space-y-0.5">
+            <template x-for="item in group.items" :key="item.page">
+              <a @click="go(item.page)" :class="page === item.page ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground'" class="flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-sm">
+                <i :data-lucide="item.icon" class="h-4 w-4"></i>
+                <span x-text="item.label"></span>
+                <span x-show="item.badge" class="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground" x-text="item.badge"></span>
+              </a>
+            </template>
+          </div>
+        </div>
+      </template>
+    </nav>
+  </aside>
+
+  <div x-show="drawerOpen" x-cloak class="fixed inset-0 z-10 bg-foreground/40 lg:hidden" @click="drawerOpen = false"></div>
+
+  <!-- 主区 -->
+  <main class="lg:pl-60 pt-16 min-h-screen">
+    <div class="mx-auto max-w-6xl">
+
+      <!-- 仪表盘 -->
+      <div x-show="page === 'dashboard'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight" x-text="dashboard.title"></h1>
+            <p class="mt-1 text-sm text-muted-foreground" x-text="dashboard.subtitle"></p>
+          </div>
+          <button @click="go('requirements')" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 发布新需求</button>
+        </div>
+        <section class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <template x-for="kpi in dashboard.kpis" :key="kpi.label">
+            <div class="rounded-lg border border-border bg-card p-5">
+              <div class="flex items-center justify-between">
+                <div class="text-sm text-muted-foreground" x-text="kpi.label"></div>
+                <i :data-lucide="kpi.icon" class="h-4 w-4 text-muted-foreground"></i>
+              </div>
+              <div class="mt-2 text-2xl font-semibold" x-text="kpi.value"></div>
+              <div class="mt-1 text-xs text-muted-foreground" x-text="kpi.subtitle"></div>
+            </div>
+          </template>
+        </section>
+        <section class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div class="rounded-lg border border-border bg-card lg:col-span-2">
+            <div class="border-b border-border px-5 py-3 flex items-center justify-between">
+              <h2 class="text-base font-semibold">招聘漏斗</h2>
+              <span class="text-xs text-muted-foreground">本月数据</span>
+            </div>
+            <div class="p-5 space-y-3">
+              <template x-for="(stage, idx) in dashboard.funnel" :key="stage.label">
+                <div>
+                  <div class="mb-1 flex items-center justify-between text-sm">
+                    <span class="font-medium" x-text="stage.label"></span>
+                    <span class="text-muted-foreground"><span x-text="stage.count"></span> 人 · <span x-text="stage.rate"></span>%</span>
+                  </div>
+                  <div class="h-2 w-full overflow-hidden rounded-full bg-muted">
+                    <div class="h-full rounded-full bg-primary" :style="'width:' + stage.rate + '%'"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+          <div class="rounded-lg border border-border bg-card">
+            <div class="border-b border-border px-5 py-3"><h2 class="text-base font-semibold">待办事项</h2></div>
+            <ul class="divide-y divide-border">
+              <template x-for="todo in dashboard.todos" :key="todo.title">
+                <li class="flex items-start gap-3 px-5 py-3">
+                  <div class="mt-1 h-2 w-2 rounded-full" :class="todo.color"></div>
+                  <div class="flex-1">
+                    <div class="text-sm font-medium" x-text="todo.title"></div>
+                    <div class="text-xs text-muted-foreground" x-text="todo.subtitle"></div>
+                  </div>
+                </li>
+              </template>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <!-- 招聘需求列表 -->
+      <div x-show="page === 'requirements'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight">招聘需求</h1>
+            <p class="mt-1 text-sm text-muted-foreground">所有用人部门提交的岗位需求</p>
+          </div>
+          <button @click="openReqCreate()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 发布新需求</button>
+        </div>
+        <div class="overflow-hidden rounded-lg border border-border bg-card">
+          <table class="w-full text-sm">
+            <thead class="bg-muted/40 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th class="px-4 py-3 text-left font-medium">职位</th>
+                <th class="px-4 py-3 text-left font-medium">部门</th>
+                <th class="px-4 py-3 text-left font-medium">HR 负责人</th>
+                <th class="px-4 py-3 text-left font-medium">紧急度</th>
+                <th class="px-4 py-3 text-left font-medium">状态</th>
+                <th class="px-4 py-3 text-right font-medium">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <template x-for="req in requirements" :key="req.id">
+                <tr class="hover:bg-muted/30">
+                  <td class="px-4 py-3 font-medium" x-text="req.title"></td>
+                  <td class="px-4 py-3 text-muted-foreground" x-text="req.dept"></td>
+                  <td class="px-4 py-3 text-muted-foreground" x-text="req.owner"></td>
+                  <td class="px-4 py-3"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" :class="req.priority_class" x-text="req.priority_label"></span></td>
+                  <td class="px-4 py-3"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" :class="req.status_class" x-text="req.status_label"></span></td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="inline-flex items-center gap-1">
+                      <button @click="openReqEdit(req.id)" class="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-muted" aria-label="编辑"><i data-lucide="pencil" class="h-4 w-4"></i></button>
+                      <button @click="askDelete('req', req.id, req.title)" class="inline-flex h-8 w-8 items-center justify-center rounded-md text-destructive hover:bg-destructive/10" aria-label="删除"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+              <tr x-show="requirements.length === 0">
+                <td colspan="6" class="px-4 py-12 text-center text-sm text-muted-foreground"><i data-lucide="inbox" class="mx-auto mb-2 h-8 w-8"></i><div>暂无招聘需求</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 候选人管道(看板) -->
+      <div x-show="page === 'pipeline'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight">候选人管道</h1>
+            <p class="mt-1 text-sm text-muted-foreground">拖动候选人切换阶段</p>
+          </div>
+          <button @click="openCandidateCreate()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 添加候选人</button>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+          <template x-for="col in pipeline.columns" :key="col.id">
+            <div class="rounded-lg border border-border bg-muted/30 p-3" @dragover.prevent="dragOverCol = col.id" @dragleave="if (dragOverCol === col.id) dragOverCol = ''" @drop.prevent="onDropPipeline(col.id)" :class="dragOverCol === col.id ? 'ring-2 ring-primary/40' : ''">
+              <div class="mb-3 flex items-center justify-between px-1">
+                <div class="flex items-center gap-2">
+                  <span class="h-2 w-2 rounded-full" :class="col.color"></span>
+                  <h3 class="text-sm font-semibold" x-text="col.title"></h3>
+                  <span class="text-xs text-muted-foreground" x-text="col.candidates.length"></span>
+                </div>
+                <button @click="openCandidateCreate(col.id)" class="inline-flex h-6 w-6 items-center justify-center rounded-md hover:bg-background" aria-label="新增"><i data-lucide="plus" class="h-3.5 w-3.5"></i></button>
+              </div>
+              <div class="space-y-2 min-h-[60px]">
+                <template x-for="c in col.candidates" :key="c.id">
+                  <div class="rounded-md border border-border bg-card p-3 shadow-sm cursor-grab active:cursor-grabbing" draggable="true" @dragstart="onDragStart($event, c.id, 'pipeline', col.id)" @dragend="onDragEnd()">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <div class="text-sm font-medium leading-snug" x-text="c.name"></div>
+                        <div class="mt-0.5 text-xs text-muted-foreground" x-text="c.role"></div>
+                      </div>
+                      <button @click="askDelete('candidate', c.id, c.name)" class="inline-flex h-6 w-6 items-center justify-center rounded-md text-destructive hover:bg-destructive/10" aria-label="删除"><i data-lucide="trash-2" class="h-3.5 w-3.5"></i></button>
+                    </div>
+                    <div class="mt-2 flex items-center justify-between text-xs">
+                      <span class="text-muted-foreground" x-text="c.round"></span>
+                      <span class="font-medium" :class="c.match_class" x-text="c.match"></span>
+                    </div>
+                  </div>
+                </template>
+                <div x-show="col.candidates.length === 0" class="rounded-md border border-dashed border-border py-6 text-center text-xs text-muted-foreground">拖动到此或点击 + 添加</div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- 面试记录 -->
+      <div x-show="page === 'interviews'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight">面试记录</h1>
+            <p class="mt-1 text-sm text-muted-foreground">所有轮次面试的评价与结果</p>
+          </div>
+          <button @click="openInterviewCreate()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 记录面试</button>
+        </div>
+        <div class="overflow-hidden rounded-lg border border-border bg-card">
+          <table class="w-full text-sm">
+            <thead class="bg-muted/40 text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th class="px-4 py-3 text-left font-medium">候选人</th>
+                <th class="px-4 py-3 text-left font-medium">轮次</th>
+                <th class="px-4 py-3 text-left font-medium">面试官</th>
+                <th class="px-4 py-3 text-left font-medium">评分</th>
+                <th class="px-4 py-3 text-left font-medium">结果</th>
+                <th class="px-4 py-3 text-right font-medium">操作</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              <template x-for="iv in interviews" :key="iv.id">
+                <tr class="hover:bg-muted/30">
+                  <td class="px-4 py-3 font-medium" x-text="iv.candidate"></td>
+                  <td class="px-4 py-3 text-muted-foreground" x-text="iv.round"></td>
+                  <td class="px-4 py-3 text-muted-foreground" x-text="iv.interviewer"></td>
+                  <td class="px-4 py-3">
+                    <div class="flex items-center gap-0.5">
+                      <template x-for="i in 5"><i :data-lucide="i <= iv.score ? 'star' : 'star-off'" :class="i <= iv.score ? 'h-3.5 w-3.5 text-amber-500 fill-amber-500' : 'h-3.5 w-3.5 text-muted-foreground/30'"></i></template>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3"><span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" :class="iv.result_class" x-text="iv.result_label"></span></td>
+                  <td class="px-4 py-3 text-right">
+                    <button @click="askDelete('interview', iv.id, iv.candidate + ' - ' + iv.round)" class="inline-flex h-8 w-8 items-center justify-center rounded-md text-destructive hover:bg-destructive/10" aria-label="删除"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+                  </td>
+                </tr>
+              </template>
+              <tr x-show="interviews.length === 0">
+                <td colspan="6" class="px-4 py-12 text-center text-sm text-muted-foreground"><i data-lucide="calendar-clock" class="mx-auto mb-2 h-8 w-8"></i><div>暂无面试记录</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 入职调查 -->
+      <div x-show="page === 'onboarding'" class="px-6 py-8">
+        <div class="mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <h1 class="text-2xl font-semibold tracking-tight">入职调查</h1>
+            <p class="mt-1 text-sm text-muted-foreground">新员工入职 30 天反馈</p>
+          </div>
+          <button @click="openOnboardCreate()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="plus" class="h-4 w-4"></i> 新建调查</button>
+        </div>
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <template x-for="s in onboardings" :key="s.id">
+            <div class="rounded-lg border border-border bg-card p-5">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="text-base font-semibold" x-text="s.employee"></div>
+                  <div class="mt-0.5 text-xs text-muted-foreground" x-text="s.dept + ' · 入职 ' + s.days + ' 天'"></div>
+                </div>
+                <span class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium" :class="s.satisfaction_class" x-text="s.satisfaction_label"></span>
+              </div>
+              <div class="mt-3 grid grid-cols-3 gap-2 text-center">
+                <div class="rounded-md border border-border p-2">
+                  <div class="text-xs text-muted-foreground">环境适应</div>
+                  <div class="mt-1 text-lg font-semibold" :class="s.env >= 4 ? 'text-emerald-600' : s.env >= 3 ? 'text-amber-600' : 'text-rose-600'" x-text="s.env + '/5'"></div>
+                </div>
+                <div class="rounded-md border border-border p-2">
+                  <div class="text-xs text-muted-foreground">导师帮助</div>
+                  <div class="mt-1 text-lg font-semibold" :class="s.mentor >= 4 ? 'text-emerald-600' : s.mentor >= 3 ? 'text-amber-600' : 'text-rose-600'" x-text="s.mentor + '/5'"></div>
+                </div>
+                <div class="rounded-md border border-border p-2">
+                  <div class="text-xs text-muted-foreground">工作清晰</div>
+                  <div class="mt-1 text-lg font-semibold" :class="s.clarity >= 4 ? 'text-emerald-600' : s.clarity >= 3 ? 'text-amber-600' : 'text-rose-600'" x-text="s.clarity + '/5'"></div>
+                </div>
+              </div>
+              <div class="mt-3 text-sm text-foreground/90" x-text="s.note"></div>
+              <div class="mt-3 flex items-center justify-end gap-1 border-t border-border pt-3">
+                <button @click="askDelete('onboard', s.id, s.employee)" class="inline-flex h-8 w-8 items-center justify-center rounded-md text-destructive hover:bg-destructive/10" aria-label="删除"><i data-lucide="trash-2" class="h-4 w-4"></i></button>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- 设置 -->
+      <div x-show="page === 'settings'" class="px-6 py-8">
+        <div class="mb-6">
+          <h1 class="text-2xl font-semibold tracking-tight">设置</h1>
+          <p class="mt-1 text-sm text-muted-foreground">招聘流程与权限</p>
+        </div>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-[220px_1fr]">
+          <nav class="space-y-1">
+            <button class="flex w-full items-center gap-2 rounded-md bg-muted px-3 py-2 text-sm font-medium text-foreground"><i data-lucide="settings" class="h-4 w-4"></i> 招聘流程</button>
+            <button class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"><i data-lucide="tag" class="h-4 w-4"></i> 职位标签</button>
+            <button @click="exportData()" class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted/50 hover:text-foreground"><i data-lucide="download" class="h-4 w-4"></i> 导出数据</button>
+          </nav>
+          <div class="rounded-lg border border-border bg-card p-6 space-y-6 max-w-2xl">
+            <div>
+              <h2 class="text-base font-semibold">面试轮次</h2>
+              <p class="mt-1 text-sm text-muted-foreground">标准招聘流程的轮次配置</p>
+              <div class="mt-3 space-y-2">
+                <div class="flex items-center gap-2 rounded-md border border-border p-3"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">1</span><span class="text-sm font-medium">HR 初面</span><span class="ml-auto text-xs text-muted-foreground">30 分钟</span></div>
+                <div class="flex items-center gap-2 rounded-md border border-border p-3"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">2</span><span class="text-sm font-medium">业务部门面试</span><span class="ml-auto text-xs text-muted-foreground">60 分钟</span></div>
+                <div class="flex items-center gap-2 rounded-md border border-border p-3"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">3</span><span class="text-sm font-medium">管理层终面</span><span class="ml-auto text-xs text-muted-foreground">45 分钟</span></div>
+                <div class="flex items-center gap-2 rounded-md border border-border p-3"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">4</span><span class="text-sm font-medium">入职 30 天调查</span><span class="ml-auto text-xs text-muted-foreground">问卷</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Modal: 招聘需求 -->
+  <div x-show="modal.open && modal.kind === 'req'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="closeModal()">
+    <div class="w-full max-w-md rounded-lg border border-border bg-background shadow-xl" @click.outside="closeModal()">
+      <div class="flex items-center justify-between border-b border-border px-5 py-3">
+        <h3 class="text-base font-semibold" x-text="modal.mode === 'edit' ? '编辑需求' : '发布新需求'"></h3>
+        <button @click="closeModal()" class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted" aria-label="关闭"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <form @submit.prevent="saveReq()" class="space-y-4 px-5 py-4">
+        <div>
+          <label class="block text-sm font-medium">职位名称</label>
+          <input x-model="modal.form.title" required placeholder="例:高级前端工程师" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">用人部门</label>
+          <input x-model="modal.form.dept" required placeholder="例:产品研发部" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">HR 负责人</label>
+          <input x-model="modal.form.owner" required placeholder="例:林静" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">紧急度</label>
+          <select x-model="modal.form.priority" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <option value="low">低</option>
+            <option value="mid">中</option>
+            <option value="high">高</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+          <button type="button" @click="closeModal()" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+          <button type="submit" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="check" class="h-4 w-4"></i> 保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: 候选人 -->
+  <div x-show="modal.open && modal.kind === 'candidate'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="closeModal()">
+    <div class="w-full max-w-md rounded-lg border border-border bg-background shadow-xl" @click.outside="closeModal()">
+      <div class="flex items-center justify-between border-b border-border px-5 py-3">
+        <h3 class="text-base font-semibold">添加候选人</h3>
+        <button @click="closeModal()" class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted" aria-label="关闭"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <form @submit.prevent="saveCandidate()" class="space-y-4 px-5 py-4">
+        <div>
+          <label class="block text-sm font-medium">姓名</label>
+          <input x-model="modal.form.name" required placeholder="例:张三" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">应聘职位</label>
+          <input x-model="modal.form.role" required placeholder="例:高级前端工程师" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">当前阶段</label>
+          <select x-model="modal.form.stage" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <template x-for="col in pipeline.columns" :key="col.id"><option :value="col.id" x-text="col.title"></option></template>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">匹配度</label>
+          <select x-model="modal.form.match" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <option value="high">高</option>
+            <option value="mid">中</option>
+            <option value="low">低</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+          <button type="button" @click="closeModal()" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+          <button type="submit" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="check" class="h-4 w-4"></i> 保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: 面试记录 -->
+  <div x-show="modal.open && modal.kind === 'interview'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="closeModal()">
+    <div class="w-full max-w-md rounded-lg border border-border bg-background shadow-xl" @click.outside="closeModal()">
+      <div class="flex items-center justify-between border-b border-border px-5 py-3">
+        <h3 class="text-base font-semibold">记录面试</h3>
+        <button @click="closeModal()" class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted" aria-label="关闭"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <form @submit.prevent="saveInterview()" class="space-y-4 px-5 py-4">
+        <div>
+          <label class="block text-sm font-medium">候选人</label>
+          <input x-model="modal.form.candidate" required placeholder="例:张三" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">面试轮次</label>
+          <select x-model="modal.form.round" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <option>HR 初面</option>
+            <option>业务一面</option>
+            <option>业务二面</option>
+            <option>管理层终面</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">面试官</label>
+          <input x-model="modal.form.interviewer" required placeholder="例:王经理" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">评分 (1-5)</label>
+          <input x-model.number="modal.form.score" type="number" min="1" max="5" value="4" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">结果</label>
+          <select x-model="modal.form.result" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50">
+            <option value="pass">通过</option>
+            <option value="hold">待定</option>
+            <option value="fail">不通过</option>
+          </select>
+        </div>
+        <div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+          <button type="button" @click="closeModal()" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+          <button type="submit" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="check" class="h-4 w-4"></i> 保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: 入职调查 -->
+  <div x-show="modal.open && modal.kind === 'onboard'" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="closeModal()">
+    <div class="w-full max-w-md rounded-lg border border-border bg-background shadow-xl" @click.outside="closeModal()">
+      <div class="flex items-center justify-between border-b border-border px-5 py-3">
+        <h3 class="text-base font-semibold">新建入职调查</h3>
+        <button @click="closeModal()" class="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-muted" aria-label="关闭"><i data-lucide="x" class="h-4 w-4"></i></button>
+      </div>
+      <form @submit.prevent="saveOnboard()" class="space-y-4 px-5 py-4">
+        <div>
+          <label class="block text-sm font-medium">员工姓名</label>
+          <input x-model="modal.form.employee" required placeholder="例:李四" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">部门</label>
+          <input x-model="modal.form.dept" required placeholder="例:产品研发部" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium">入职天数</label>
+          <input x-model.number="modal.form.days" type="number" min="1" value="30" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="block text-sm font-medium">环境</label>
+            <input x-model.number="modal.form.env" type="number" min="1" max="5" value="4" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium">导师</label>
+            <input x-model.number="modal.form.mentor" type="number" min="1" max="5" value="4" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium">清晰度</label>
+            <input x-model.number="modal.form.clarity" type="number" min="1" max="5" value="4" class="mt-1 h-9 w-full rounded-md border border-border bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium">反馈</label>
+          <textarea x-model="modal.form.note" rows="2" placeholder="员工的反馈意见..." class="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"></textarea>
+        </div>
+        <div class="flex items-center justify-end gap-2 border-t border-border pt-4">
+          <button type="button" @click="closeModal()" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+          <button type="submit" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground hover:opacity-90"><i data-lucide="check" class="h-4 w-4"></i> 保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 删除确认 -->
+  <div x-show="confirm.open" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-4" @keydown.escape.window="confirm.open = false">
+    <div class="w-full max-w-sm rounded-lg border border-border bg-background p-5 shadow-xl" @click.outside="confirm.open = false">
+      <div class="flex items-start gap-3">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive"><i data-lucide="alert-triangle" class="h-5 w-5"></i></div>
+        <div class="flex-1">
+          <h3 class="text-base font-semibold">确认删除</h3>
+          <p class="mt-1 text-sm text-muted-foreground">确定要删除 <span class="font-medium text-foreground" x-text="confirm.title"></span> 吗?此操作无法撤销。</p>
+        </div>
+      </div>
+      <div class="mt-5 flex items-center justify-end gap-2">
+        <button @click="confirm.open = false" class="inline-flex h-9 items-center rounded-md border border-border bg-background px-3 text-sm hover:bg-muted">取消</button>
+        <button @click="doDelete()" class="inline-flex h-9 items-center gap-1.5 rounded-md bg-destructive px-3 text-sm font-medium text-destructive-foreground hover:opacity-90"><i data-lucide="trash-2" class="h-4 w-4"></i> 删除</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 初始数据 -->
+  <script>
+    window.__APP_DATA__ = {
+      product: { name: '招聘管理后台', storage_key: 'hr-recruitment', avatar_initial: 'HR', user_name: '林静' },
+      nav_groups: [
+        { id: 'main', label: '工作台', items: [
+          { page: 'dashboard', label: '招聘概览', icon: 'layout-dashboard' },
+        ]},
+        { id: 'biz', label: '招聘流程', items: [
+          { page: 'requirements', label: '招聘需求', icon: 'megaphone' },
+          { page: 'pipeline', label: '候选人管道', icon: 'users' },
+          { page: 'interviews', label: '面试记录', icon: 'calendar-check' },
+          { page: 'onboarding', label: '入职调查', icon: 'clipboard-check' },
+        ]},
+        { id: 'sys', label: '系统', items: [
+          { page: 'settings', label: '设置', icon: 'settings' },
+        ]},
+      ],
+      dashboard: {
+        title: '招聘概览',
+        subtitle: '本月招聘进度与待办',
+        kpis: [
+          { label: '活跃需求', value: '8', subtitle: '较上月 +2', icon: 'megaphone' },
+          { label: '在面候选人', value: '24', subtitle: '本周 5 场面试', icon: 'users' },
+          { label: '本月入职', value: '6', subtitle: '完成率 75%', icon: 'user-check' },
+          { label: '平均周期', value: '23天', subtitle: '目标 30 天内', icon: 'clock' },
+        ],
+        funnel: [
+          { label: '投递简历', count: 120, rate: 100 },
+          { label: 'HR 初面', count: 45, rate: 38 },
+          { label: '业务面试', count: 22, rate: 18 },
+          { label: '管理层终面', count: 12, rate: 10 },
+          { label: '发放 offer', count: 8, rate: 7 },
+        ],
+        todos: [
+          { title: '审批 3 个新需求', subtitle: '来自产品研发部', color: 'bg-rose-500' },
+          { title: '安排张三的业务二面', subtitle: '明天截止', color: 'bg-amber-500' },
+          { title: '回访 5 位 offer 候选人', subtitle: '本周内', color: 'bg-blue-500' },
+          { title: '提交本月招聘数据', subtitle: '月底前', color: 'bg-emerald-500' },
+        ],
+      },
+      requirements: [
+        { id: 1, title: '高级前端工程师', dept: '产品研发部', owner: '林静', priority: 'high', priority_label: '高', priority_class: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300', status: 'open', status_label: '招聘中', status_class: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300' },
+        { id: 2, title: '产品经理', dept: '产品部', owner: '林静', priority: 'mid', priority_label: '中', priority_class: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300', status: 'open', status_label: '招聘中', status_class: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300' },
+        { id: 3, title: '数据分析师', dept: '运营部', owner: '王芳', priority: 'low', priority_label: '低', priority_class: 'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300', status: 'paused', status_label: '已暂停', status_class: 'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300' },
+        { id: 4, title: '客户成功经理', dept: '销售部', owner: '王芳', priority: 'high', priority_label: '高', priority_class: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300', status: 'filled', status_label: '已招到', status_class: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' },
+      ],
+      pipeline: {
+        columns: [
+          { id: 'sourced', title: '简历筛选', color: 'bg-slate-500', candidates: [
+            { id: 101, name: '王明', role: '高级前端', round: '待 HR 初面', match: '高', match_class: 'text-emerald-600' },
+            { id: 102, name: '赵琳', role: '产品经理', round: '待 HR 初面', match: '中', match_class: 'text-amber-600' },
+          ]},
+          { id: 'hr', title: 'HR 初面', color: 'bg-blue-500', candidates: [
+            { id: 201, name: '钱伟', role: '高级前端', round: '通过 HR', match: '高', match_class: 'text-emerald-600' },
+          ]},
+          { id: 'biz', title: '业务面试', color: 'bg-amber-500', candidates: [
+            { id: 301, name: '孙芳', role: '产品经理', round: '一面通过', match: '高', match_class: 'text-emerald-600' },
+            { id: 302, name: '李娜', role: '数据分析师', round: '一面中', match: '中', match_class: 'text-amber-600' },
+          ]},
+          { id: 'final', title: '管理层终面', color: 'bg-violet-500', candidates: [
+            { id: 401, name: '周强', role: '客户成功', round: '明天终面', match: '高', match_class: 'text-emerald-600' },
+          ]},
+          { id: 'offer', title: '已发 offer', color: 'bg-emerald-500', candidates: [
+            { id: 501, name: '吴敏', role: '高级前端', round: '等待入职', match: '高', match_class: 'text-emerald-600' },
+          ]},
+        ],
+      },
+      interviews: [
+        { id: 1, candidate: '孙芳', round: '业务一面', interviewer: '张总', score: 4, result: 'pass', result_label: '通过', result_class: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' },
+        { id: 2, candidate: '李娜', round: 'HR 初面', interviewer: '林静', score: 3, result: 'hold', result_label: '待定', result_class: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300' },
+        { id: 3, candidate: '周强', round: '业务二面', interviewer: '王经理', score: 5, result: 'pass', result_label: '通过', result_class: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' },
+      ],
+      onboardings: [
+        { id: 1, employee: '吴敏', dept: '产品研发部', days: 15, env: 5, mentor: 5, clarity: 4, satisfaction_label: '非常满意', satisfaction_class: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300', note: '导师很负责,工作节奏清晰,环境舒适。' },
+        { id: 2, employee: '黄丽', dept: '销售部', days: 30, env: 4, mentor: 3, clarity: 3, satisfaction_label: '一般', satisfaction_class: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300', note: '希望加强产品培训,客户对接流程需要更明确。' },
+        { id: 3, employee: '徐刚', dept: '运营部', days: 7, env: 4, mentor: 4, clarity: 5, satisfaction_label: '满意', satisfaction_class: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300', note: '工作目标明确,工具齐全。' },
+      ],
+    };
+  </script>
+
+  <!-- Alpine app() -->
+  <script>
+    function app() {
+      const D = window.__APP_DATA__ || {};
+      const PRIO_CLS = { high: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300', mid: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300', low: 'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300' };
+      const PRIO_LBL = { high: '高', mid: '中', low: '低' };
+      const STAT_CLS = { open: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300', paused: 'bg-slate-100 text-slate-700 dark:bg-slate-500/20 dark:text-slate-300', filled: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' };
+      const STAT_LBL = { open: '招聘中', paused: '已暂停', filled: '已招到' };
+      const RES_CLS = { pass: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300', hold: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300', fail: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300' };
+      const RES_LBL = { pass: '通过', hold: '待定', fail: '不通过' };
+      const MATCH_CLS = { high: 'text-emerald-600', mid: 'text-amber-600', low: 'text-rose-600' };
+      return {
+        product: D.product || {},
+        navGroups: D.nav_groups || [],
+        dashboard: D.dashboard || { kpis: [], funnel: [], todos: [] },
+        requirements: D.requirements || [],
+        pipeline: D.pipeline || { columns: [] },
+        interviews: D.interviews || [],
+        onboardings: D.onboardings || [],
+        page: 'dashboard',
+        drawerOpen: false,
+        groupOpen: {},
+        dark: false,
+        listQuery: '',
+        dragCardId: null,
+        dragFromCol: null,
+        dragOverCol: null,
+        modal: { open: false, kind: '', mode: '', form: {} },
+        confirm: { open: false, kind: '', id: null, title: '' },
+        init() {
+          try { const s = localStorage.getItem(this.themeKey()); this.dark = s === 'dark' || (s === null && window.matchMedia('(prefers-color-scheme: dark)').matches); } catch (e) { this.dark = false; }
+          this.applyTheme();
+          (this.navGroups || []).forEach(g => { this.groupOpen[g.id] = true; });
+          this.loadAll();
+          window.addEventListener('hashchange', () => this.syncPageFromHash());
+          this.syncPageFromHash();
+          this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} });
+        },
+        themeKey() { return (this.product.storage_key || 'app') + '__theme'; },
+        applyTheme() { document.documentElement.classList.toggle('dark', this.dark); },
+        toggleTheme() { this.dark = !this.dark; this.applyTheme(); try { localStorage.setItem(this.themeKey(), this.dark ? 'dark' : 'light'); } catch (e) {} },
+        go(page) { this.page = page; this.drawerOpen = false; if (window.location.hash !== '#' + page) { window.location.hash = page; } this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        syncPageFromHash() { const h = (window.location.hash || '#dashboard').slice(1); const valid = ['dashboard','requirements','pipeline','interviews','onboarding','settings']; this.page = valid.includes(h) ? h : 'dashboard'; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+        toggleGroup(id) { this.groupOpen[id] = !this.groupOpen[id]; this.$nextTick(() => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} }); },
+
+        // 需求 CRUD
+        openReqCreate() { this.modal = { open: true, kind: 'req', mode: 'create', form: { title: '', dept: '', owner: '', priority: 'mid' } }; this.$nextTick(() => window.lucide && window.lucide.createIcons()); },
+        openReqEdit(id) { const r = (this.requirements || []).find(x => x.id === id); if (!r) return; this.modal = { open: true, kind: 'req', mode: 'edit', form: { ...r } }; this.$nextTick(() => window.lucide && window.lucide.createIcons()); },
+        saveReq() {
+          const f = this.modal.form;
+          const pcls = PRIO_CLS[f.priority] || PRIO_CLS.mid; const plbl = PRIO_LBL[f.priority] || '中';
+          if (this.modal.mode === 'edit' && f.id) {
+            const idx = this.requirements.findIndex(x => x.id === f.id);
+            if (idx >= 0) this.requirements[idx] = { ...this.requirements[idx], ...f, priority_class: pcls, priority_label: plbl };
+          } else {
+            const id = Date.now() + Math.floor(Math.random() * 1000);
+            this.requirements.unshift({ ...f, id, priority_class: pcls, priority_label: plbl, status: 'open', status_label: '招聘中', status_class: STAT_CLS.open });
+          }
+          this.saveAll(); this.closeModal();
+        },
+
+        // 候选人 CRUD
+        openCandidateCreate(stage) { const def = stage || (this.pipeline.columns[0] && this.pipeline.columns[0].id) || ''; this.modal = { open: true, kind: 'candidate', mode: 'create', form: { name: '', role: '', stage: def, match: 'mid' } }; this.$nextTick(() => window.lucide && window.lucide.createIcons()); },
+        saveCandidate() {
+          const f = this.modal.form;
+          const col = this.pipeline.columns.find(c => c.id === f.stage) || this.pipeline.columns[0];
+          col.candidates = col.candidates || [];
+          col.candidates.unshift({ id: Date.now() + Math.floor(Math.random()*1000), name: f.name, role: f.role, round: '新加入', match: f.match === 'high' ? '高' : f.match === 'mid' ? '中' : '低', match_class: MATCH_CLS[f.match] || MATCH_CLS.mid });
+          this.saveAll(); this.closeModal();
+        },
+
+        // 面试 CRUD
+        openInterviewCreate() { this.modal = { open: true, kind: 'interview', mode: 'create', form: { candidate: '', round: 'HR 初面', interviewer: '', score: 4, result: 'pass' } }; this.$nextTick(() => window.lucide && window.lucide.createIcons()); },
+        saveInterview() {
+          const f = this.modal.form;
+          this.interviews.unshift({ id: Date.now() + Math.floor(Math.random()*1000), candidate: f.candidate, round: f.round, interviewer: f.interviewer, score: Number(f.score) || 4, result: f.result, result_label: RES_LBL[f.result], result_class: RES_CLS[f.result] });
+          this.saveAll(); this.closeModal();
+        },
+
+        // 入职调查 CRUD
+        openOnboardCreate() { this.modal = { open: true, kind: 'onboard', mode: 'create', form: { employee: '', dept: '', days: 30, env: 4, mentor: 4, clarity: 4, note: '' } }; this.$nextTick(() => window.lucide && window.lucide.createIcons()); },
+        saveOnboard() {
+          const f = this.modal.form;
+          const avg = (Number(f.env) + Number(f.mentor) + Number(f.clarity)) / 3;
+          const sat = avg >= 4.5 ? { lbl: '非常满意', cls: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300' } : avg >= 3.5 ? { lbl: '满意', cls: 'bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300' } : avg >= 2.5 ? { lbl: '一般', cls: 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-300' } : { lbl: '不满意', cls: 'bg-rose-100 text-rose-700 dark:bg-rose-500/20 dark:text-rose-300' };
+          this.onboardings.unshift({ id: Date.now() + Math.floor(Math.random()*1000), employee: f.employee, dept: f.dept, days: Number(f.days) || 30, env: Number(f.env) || 4, mentor: Number(f.mentor) || 4, clarity: Number(f.clarity) || 4, satisfaction_label: sat.lbl, satisfaction_class: sat.cls, note: f.note || '' });
+          this.saveAll(); this.closeModal();
+        },
+
+        // 拖拽(候选人)
+        onDragStart(ev, id, kind, fromCol) { this.dragCardId = id; this.dragFromCol = fromCol; try { ev.dataTransfer.effectAllowed = 'move'; ev.dataTransfer.setData('text/plain', String(id)); } catch (e) {} },
+        onDragEnd() { this.dragCardId = null; this.dragFromCol = null; this.dragOverCol = null; },
+        onDropPipeline(toCol) {
+          const id = this.dragCardId; if (!id || !toCol) { this.onDragEnd(); return; }
+          let card = null;
+          for (const c of (this.pipeline.columns || [])) { const idx = (c.candidates || []).findIndex(x => x.id === id); if (idx >= 0) { [card] = c.candidates.splice(idx, 1); break; } }
+          if (!card) { this.onDragEnd(); return; }
+          const to = this.pipeline.columns.find(c => c.id === toCol);
+          if (to) { to.candidates = to.candidates || []; to.candidates.unshift(card); }
+          this.onDragEnd(); this.saveAll();
+        },
+
+        // 删除
+        askDelete(kind, id, title) { this.confirm = { open: true, kind, id, title: title || '此项' }; this.$nextTick(() => window.lucide && window.lucide.createIcons()); },
+        doDelete() {
+          const k = this.confirm.kind, id = this.confirm.id;
+          if (k === 'req') this.requirements = this.requirements.filter(x => x.id !== id);
+          else if (k === 'candidate') (this.pipeline.columns || []).forEach(c => { c.candidates = (c.candidates || []).filter(x => x.id !== id); });
+          else if (k === 'interview') this.interviews = this.interviews.filter(x => x.id !== id);
+          else if (k === 'onboard') this.onboardings = this.onboardings.filter(x => x.id !== id);
+          this.saveAll();
+          this.confirm = { open: false, kind: '', id: null, title: '' };
+        },
+
+        closeModal() { this.modal = { open: false, kind: '', mode: '', form: {} }; },
+
+        dataKey() { return (this.product.storage_key || 'app') + '__data_v1'; },
+        saveAll() { try { localStorage.setItem(this.dataKey(), JSON.stringify({ requirements: this.requirements, pipeline_columns: this.pipeline.columns, interviews: this.interviews, onboardings: this.onboardings })); } catch (e) {} },
+        loadAll() { try { const raw = localStorage.getItem(this.dataKey()); if (!raw) return; const d = JSON.parse(raw); if (Array.isArray(d.requirements)) this.requirements = d.requirements; if (Array.isArray(d.pipeline_columns)) this.pipeline.columns = d.pipeline_columns; if (Array.isArray(d.interviews)) this.interviews = d.interviews; if (Array.isArray(d.onboardings)) this.onboardings = d.onboardings; } catch (e) {} },
+        exportData() { try { const blob = new Blob([JSON.stringify({ requirements: this.requirements, pipeline_columns: this.pipeline.columns, interviews: this.interviews, onboardings: this.onboardings, exported_at: new Date().toISOString() }, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = (this.product.storage_key || 'app') + '-export.json'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); } catch (e) {} },
+      };
+    }
+  </script>
+  <script>
+    document.addEventListener('alpine:initialized', () => { try { window.lucide && window.lucide.createIcons(); } catch (e) {} });
+  </script>
+</body>
+</html>
