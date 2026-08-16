@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKILL.md · Skill 主文档</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter','system-ui','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } };
+  </script>
+  <style>
+    :root { --bg: 0 0% 100%; --fg: 222.2 84% 4.9%; --card: 0 0% 100%; --border: 214.3 31.8% 91.4%; --muted: 210 40% 96.1%; }
+    .dark { --bg: 222.2 84% 4.9%; --fg: 210 40% 98%; --card: 222.2 84% 6.5%; --border: 217.2 32.6% 17.5%; --muted: 217.2 32.6% 12.5%; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: hsl(var(--bg)); color: hsl(var(--fg)); }
+    pre { white-space: pre-wrap; word-break: break-word; }
+    code { font-family: 'JetBrains Mono', monospace; }
+    h1, h2, h3 { scroll-margin-top: 5rem; }
+    table { border-collapse: collapse; }
+    td, th { border: 1px solid hsl(var(--border)); padding: 0.5rem 0.75rem; }
+    thead { background: hsl(var(--muted)); }
+    tbody tr:hover { background: hsl(var(--muted)); }
+  </style>
+</head>
+<body>
+  <div class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-700 bg-white/90 dark:bg-slate-900/90 backdrop-blur" style="height:56px; display:flex; align-items:center;">
+    <div class="max-w-4xl mx-auto px-6 w-full flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <a href="../index.html" class="flex items-center gap-2 text-sm font-semibold text-blue-500 hover:text-blue-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          返回教学门户
+        </a>
+        <span class="text-slate-300">|</span>
+        <span class="text-sm font-mono opacity-50">SKILL.md · Skill 主文档</span>
+      </div>
+      <button onclick="document.documentElement.classList.toggle('dark'); localStorage.setItem('md-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light')" class="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-sm hover:opacity-80 transition-opacity">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="max-w-4xl mx-auto px-6 py-10" x-data="{ dark: localStorage.getItem('md-theme') === 'dark' || window.matchMedia('(prefers-color-scheme: dark)').matches }" x-init="document.documentElement.classList.toggle('dark', dark)">
+    <div class="prose prose-slate dark:prose-invert max-w-none">
+      <hr class="border-slate-200 dark:border-slate-700 my-6">
+<p class="mb-3 text-sm leading-relaxed">name: business-assistant-agent description: 把企业员工的业务痛点一步步变成可交付的网页应用。当用户描述一个具体业务问题、希望做成网页/小程序/工具来加速日常工作,或要基于已有 PRD 进入产品开发时,使用本 Skill。流程会覆盖:需求发现 → 产品文档(PRD)自动生成与确认 → 基于 PRD 的网页应用生成(默认 Vercel / shadcn UI 风格)→ 用户持续反馈与迭代。也适合作为培训场景下的教练使用,让企业员工在和 Codex 对话的过程中学会把模糊的业务问题变成可用的产品。 ---</p>
+
+<h1 id="业务助手智能体businessassistantagent" class="font-bold mb-3 mt-6 text-3xl">业务助手智能体(Business Assistant Agent)</h1>
+
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">训练企业员工用 Codex 开发网页应用解决具体业务问题的端到端 Skill。</blockquote>
+<blockquote class="border-l-4 border-blue-500 pl-4 my-3 text-sm opacity-80">目标:让一个不懂技术的业务人员,通过和 Codex 几轮对话就拿到一个能直接用的网页应用,并能持续改进。</blockquote>
+
+<h2 id="1适用场景" class="font-bold mb-3 mt-6 text-2xl">1. 适用场景</h2>
+
+<p class="mb-3 text-sm leading-relaxed">触发本 Skill 的典型用户输入:</p>
+
+<li class="ml-4 mb-1">我想做一个"业务功能"的网页应用</li>
+<li class="ml-4 mb-1">我们销售现场有"描述痛点",能不能搭个小工具</li>
+<li class="ml-4 mb-1">我手头有一份 PRD,帮我把它做成网页</li>
+<li class="ml-4 mb-1">这是 v0.1 的产品,能帮我改成支持"新需求"的版本吗</li>
+<li class="ml-4 mb-1">我想用 AI 帮我捋一个"业务模块",先出产品文档</li>
+<li class="ml-4 mb-1">用户明确说"用 $business-assistant-agent"或"用业务助手智能体"</li>
+
+<p class="mb-3 text-sm leading-relaxed">不适用场景(请拒绝或转给别的 Skill):</p>
+
+<li class="ml-4 mb-1">复杂后端 / 微服务 / 高并发基础设施</li>
+<li class="ml-4 mb-1">移动 App 原生开发(iOS Swift / Android Kotlin)</li>
+<li class="ml-4 mb-1">桌面客户端应用</li>
+<li class="ml-4 mb-1">训练大模型 / 改基础模型</li>
+
+<h2 id="2总体工作流四阶段无限双向往返" class="font-bold mb-3 mt-6 text-2xl">2. 总体工作流(四阶段 + 无限双向往返)</h2>
+
+<h3 id="21主流程每个产品只走一次的主干道" class="font-bold mb-3 mt-6 text-xl">2.1 主流程(每个产品只走一次的"主干道")</h3>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+[阶段一] 需求发现:轻量访谈,2-3 轮对话
+   ↓ 用户说"对,就这个意思"
+[阶段二] PRD 自动生成:写到 outputs/prd-&lt;产品&gt;-v0.1.md
+   ↓ 用户在 PRD 上批注 / 直接说"OK"
+[阶段三] 网页应用自动生成:写到 outputs/&lt;产品&gt;/index.html
+   ↓ 用户在浏览器里查看
+[阶段四] 持续迭代:用户每条反馈都更新到 PRD + 代码 + CHANGELOG
+   → 可无限循环
+</code></pre>
+
+<h3 id="22阶段二三四之间的双向往返主流程跑通后所有改动都走这条环" class="font-bold mb-3 mt-6 text-xl">2.2 阶段二 / 三 / 四 之间的双向往返(主流程跑通后,所有改动都走这条环)</h3>
+
+<pre class="bg-slate-900 text-slate-100 rounded-lg p-4 mb-4 overflow-x-auto text-xs font-mono"><code class="language-">
+        ┌──────────────────────────────────────┐
+        │  对话里提出新需求 / 反馈              │
+        │  (改 PRD / 改对话 / 改应用)           │
+        └──────────────┬───────────────────────┘
+                       ↓
+        ┌──────────────────────────────────────┐
+        │  Skill 先做 30 秒意图分类              │
+        │  → 4 种场景: A / B / C / D            │
+        │  (详见 references/iteration-patterns.md)
+        └──────────────┬───────────────────────┘
+                       ↓
+       ┌──────────┬──────────┬──────────┐
+       ↓          ↓          ↓          ↓
+   ┌───────┐  ┌───────┐  ┌───────┐  ┌───────┐
+   │ 场景 A │  │ 场景 B │  │ 场景 C │  │ 场景 D │
+   │ 改 PRD │  │ 对话并 │  │ 重大   │  │ 视觉   │
+   │ 后重   │  │ 入 PRD │  │ 重构   │  │ 微调   │
+   │ 生成   │  │        │  │        │  │        │
+   └───┬───┘  └───┬───┘  └───┬───┘  └───┬───┘
+       │          │          │          │
+       └──────────┴────┬─────┴──────────┘
+                       ↓
+        ┌──────────────────────────────────────┐
+        │  三件套一起更新:                      │
+        │  - PRD(&lt;产品&gt;-v&lt;X&gt;.md)               │
+        │  - 代码(index.html)                  │
+        │  - CHANGELOG.md                      │
+        │  保持单一事实源,不脱节               │
+        └──────────────┬───────────────────────┘
+                       ↓
+        ┌──────────────────────────────────────┐
+        │  告诉用户:                            │
+        │  - 改了什么(枚举 1-3 条)              │
+        │  - 数据是否兼容                        │
+        │  - 怎么验证(打开哪个视图点哪个按钮)  │
+        └──────────────┬───────────────────────┘
+                       ↓
+                (回到对话,继续)
+</code></pre>
+
+<p class="mb-3 text-sm leading-relaxed"><strong class="font-semibold">4 种场景的速记</strong>:</p>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">场景 A</strong>:用户完善 PRD 后再次生成(改字段、改局部功能)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">场景 B</strong>:对话内容合并到 PRD(用户说"把刚才聊的也写进 PRD")</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">场景 C</strong>:PRD 重大改动重生成(流程推翻、整页重写)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">场景 D</strong>:小改直接动代码(视觉/文案微调,跳过 PRD)</li>
+
+<p class="mb-3 text-sm leading-relaxed">完整的流程、判定标准、反模式请读 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code>。</p>
+
+<p class="mb-3 text-sm leading-relaxed">每个阶段开始前要主动告诉用户接下来会发生什么,不要埋头直接产出。 每个阶段结束前要主动确认是否进入下一阶段。</p>
+
+<h2 id="3阶段一需求发现" class="font-bold mb-3 mt-6 text-2xl">3. 阶段一:需求发现</h2>
+
+<p class="mb-3 text-sm leading-relaxed">详见 references/agent-design-patterns.md 第 2 章。</p>
+
+<p class="mb-3 text-sm leading-relaxed">执行清单:</p>
+
+<li class="ml-4 mb-1">用一句开场白告诉用户接下来会发生什么:"我会先和你聊 2-3 轮,问清楚业务场景和核心功能,然后给你出产品文档。"</li>
+<li class="ml-4 mb-1">第一轮只问"业务场景"和"用户角色":</li>
+<li class="ml-4 mb-1">这个工具是给谁用的?(销售 / HR / 运营 / 客服 / ...本人)</li>
+<li class="ml-4 mb-1">解决什么具体痛点?(用户原话 + 现状是怎么做的)</li>
+<li class="ml-4 mb-1">大致使用频率?(每天 / 每周 / 偶尔)</li>
+<li class="ml-4 mb-1">第二轮问"核心功能"和"字段":</li>
+<li class="ml-4 mb-1">主要想记录哪些信息?</li>
+<li class="ml-4 mb-1">关键操作有哪些?(新建 / 编辑 / 删除 / 搜索 / 导出 ...)</li>
+<li class="ml-4 mb-1">有没有流程性要求?(例如:候选人必须经过 HR 面试 → 业务面试 → 终面)</li>
+<li class="ml-4 mb-1">第三轮(可选)问"风格"和"参考":</li>
+<li class="ml-4 mb-1">风格偏好(现代简洁 / 表格密集 / 看板拖拽)</li>
+<li class="ml-4 mb-1">有没有看过哪个网站/产品想抄?(例如"像 Vercel" / "像飞书")</li>
+
+<p class="mb-3 text-sm leading-relaxed">反模式(不要做):</p>
+
+<li class="ml-4 mb-1">不要一次问 10 个问题,把用户淹没</li>
+<li class="ml-4 mb-1">不要替用户做业务决策(问"销售员需要看到这个字段吗",不要替他说"不需要")</li>
+<li class="ml-4 mb-1">不要急着进入 PRD,需求不清的 PRD 是垃圾</li>
+
+<h2 id="4阶段二prd自动生成" class="font-bold mb-3 mt-6 text-2xl">4. 阶段二:PRD 自动生成</h2>
+
+<p class="mb-3 text-sm leading-relaxed">详见 references/prd-template.md(模板)和 references/modern-web-design.md(设计参考)。</p>
+
+<p class="mb-3 text-sm leading-relaxed">执行清单:</p>
+
+<li class="ml-4 mb-1">基于需求对话,直接写出 PRD 文件,保存到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-<产品名>-v0.1.md</code></li>
+<li class="ml-4 mb-1">PRD 必须包含以下章节(详见模板):</li>
+<li class="ml-4 mb-1">产品定位 / 目标用户 / 使用场景</li>
+<li class="ml-4 mb-1">核心功能列表(按优先级)</li>
+<li class="ml-4 mb-1">页面结构(主导航 + 子视图)</li>
+<li class="ml-4 mb-1">字段定义(每张表/模块的字段、类型、约束)</li>
+<li class="ml-4 mb-1">交互细节(搜索/筛选/拖拽/弹窗/确认)</li>
+<li class="ml-4 mb-1">视觉风格(色板/字体/圆角/阴影/暗色模式)</li>
+<li class="ml-4 mb-1">写完后,<strong class="font-semibold">主动告诉用户</strong>:</li>
+<li class="ml-4 mb-1">PRD 已经写到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/prd-<产品名>-v0.1.md</code></li>
+<li class="ml-4 mb-1">请逐项审阅,有问题直接说"修改 XX 部分"</li>
+<li class="ml-4 mb-1">没问题就说"OK"或"开始生成 Demo"</li>
+
+<p class="mb-3 text-sm leading-relaxed">反模式(不要做):</p>
+
+<li class="ml-4 mb-1">不要 PRD 写完就闷头生成 Demo,必须等用户确认</li>
+<li class="ml-4 mb-1">不要把 PRD 写到对话里,必须写到文件(用户可以分享给同事)</li>
+<li class="ml-4 mb-1">不要省略字段定义,这是 Demo 生成阶段的唯一输入</li>
+
+<h3 id="41阶段二与阶段三的双向往返" class="font-bold mb-3 mt-6 text-xl">4.1 阶段二与阶段三的双向往返</h3>
+
+<p class="mb-3 text-sm leading-relaxed">用户确认 PRD 后,Skill 应明确告知三件事:</p>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">现在进入阶段三,基于 PRD 生成 Demo</strong></li>
+<li class="ml-4 mb-1"><strong class="font-semibold">Demo 生成完后,可以继续来回改 PRD / 改应用</strong>(触发场景 A/B/C/D)</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">任意时刻用户都可以说「把刚才对话也写进 PRD」</strong>,Skill 应执行场景 B 的合并流程</li>
+
+<p class="mb-3 text-sm leading-relaxed">PRD 顶部加「版本」「最后更新」两个字段,每次变动同步更新。 所有往返场景的细节见 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code>。</p>
+
+<h2 id="5阶段三网页应用生成" class="font-bold mb-3 mt-6 text-2xl">5. 阶段三:网页应用生成</h2>
+
+<p class="mb-3 text-sm leading-relaxed">基于已确认的 PRD,<strong class="font-semibold">直接生成单文件 HTML Demo</strong>,保存到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/index.html</code>。</p>
+
+<p class="mb-3 text-sm leading-relaxed">必读 references(顺序):</p>
+
+<li class="ml-4 mb-1"><code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/design-system.md</code> — Vercel / shadcn UI 设计语言(色值/圆角/字体/组件)</li>
+<li class="ml-4 mb-1"><code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/web-blueprints.md</code> — 8 类业务骨架(单实体 CRUD / 多实体 CRUD / 看板 / 表单收集 / 流程编排 / 看板 + 详情 / 仪表盘 / 设置)</li>
+<li class="ml-4 mb-1"><code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/crud-pattern.md</code> — CRUD 实现规范(必读,保证新增/编辑/删除真的能用)</li>
+
+<p class="mb-3 text-sm leading-relaxed">技术栈(全部 CDN,零安装):</p>
+
+<li class="ml-4 mb-1">Tailwind CSS(CDN)</li>
+<li class="ml-4 mb-1">Alpine.js 3(CDN)</li>
+<li class="ml-4 mb-1">lucide(图标库 CDN)</li>
+<li class="ml-4 mb-1">localStorage(数据持久化)</li>
+<li class="ml-4 mb-1">Inter / JetBrains Mono(Google Fonts)</li>
+
+<p class="mb-3 text-sm leading-relaxed">硬性要求(违反任何一个 = 视为未完成):</p>
+
+<li class="ml-4 mb-1">[ ] 单文件 HTML,所有 CSS / JS 内联或 CDN</li>
+<li class="ml-4 mb-1">[ ] 主导航在<strong class="font-semibold">左侧</strong>(<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">lg:pl-60</code> + <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300"><aside class="fixed ... left-0"></code>)</li>
+<li class="ml-4 mb-1">[ ] 顶部 16px 固定栏(<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">fixed inset-x-0 top-0 z-30 h-16</code>)</li>
+<li class="ml-4 mb-1">[ ] 浅色/深色双主题(prefers-color-scheme 自动 + 手动切换)</li>
+<li class="ml-4 mb-1">[ ] 5 种状态色配对(emerald/amber/rose/blue/slate,各 2 套)</li>
+<li class="ml-4 mb-1">[ ] Tailwind safelist 必须包含所有动态状态色类</li>
+<li class="ml-4 mb-1">[ ] lucide 图标(零 emoji)</li>
+<li class="ml-4 mb-1">[ ] 每个图标按钮带 aria-label</li>
+<li class="ml-4 mb-1">[ ] Modal 含 ESC 关闭 + click.outside 关闭</li>
+<li class="ml-4 mb-1">[ ] localStorage 持久化(<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300"><产品名>__data_v1</code> 命名)</li>
+<li class="ml-4 mb-1">[ ] 移动端 375px 适配 + 抽屉式左侧导航</li>
+<li class="ml-4 mb-1">[ ] CRUD 全部真的能用(参见 crud-pattern.md)</li>
+
+<p class="mb-3 text-sm leading-relaxed">生成完成后,主动告诉用户:</p>
+<li class="ml-4 mb-1">Demo 路径:<code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/index.html</code></li>
+<li class="ml-4 mb-1">怎么用:双击在浏览器打开,所有数据存 localStorage,刷新不丢</li>
+<li class="ml-4 mb-1">怎么改:在对话里继续提建议,Skill 会基于现有 Demo 增量更新</li>
+
+<h2 id="6阶段四持续迭代以双向往返为核心" class="font-bold mb-3 mt-6 text-2xl">6. 阶段四:持续迭代(以双向往返为核心)</h2>
+
+<p class="mb-3 text-sm leading-relaxed">用户看到 Demo 后,可以无限制地提反馈。<strong class="font-semibold">任意时刻用户都可以:改 PRD、要求重新生成、或把对话里说过的新需求合并到 PRD。</strong></p>
+
+<p class="mb-3 text-sm leading-relaxed">Skill 在每次收到用户新消息时,先做 30 秒意图分类,路由到 4 种场景之一(详见 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code>):</p>
+
+<h3 id="61场景a用户完善prd后再次生成" class="font-bold mb-3 mt-6 text-xl">6.1 场景 A:用户完善 PRD 后再次生成</h3>
+
+<li class="ml-4 mb-1">用户在 PRD 上改 / 在对话里说"把 X 改成 Y"</li>
+<li class="ml-4 mb-1">Skill 重读 PRD → 增量或整页重写 → 三件套一起更新</li>
+<li class="ml-4 mb-1">改完告诉用户:这次改了什么 + 数据是否兼容 + 怎么验证</li>
+
+<h3 id="62场景b对话内容合并到prd" class="font-bold mb-3 mt-6 text-xl">6.2 场景 B:对话内容合并到 PRD</h3>
+
+<li class="ml-4 mb-1">用户说"把刚才聊的也写进 PRD" / 隐式补充新规则</li>
+<li class="ml-4 mb-1">Skill 抽取对话事实 → 展示合并草案 → 用户 OK 后写入 PRD</li>
+<li class="ml-4 mb-1">合并后主动问"PRD 改完了,要重新生成应用吗?"</li>
+
+<h3 id="63场景cprd重大改动重生成" class="font-bold mb-3 mt-6 text-xl">6.3 场景 C:PRD 重大改动重生成</h3>
+
+<li class="ml-4 mb-1">用户说"流程重做" / 影响 > 30% 代码</li>
+<li class="ml-4 mb-1">Skill 冻结老版本 snapshot → 主版本 +1 → 整页重写 → 写迁移函数</li>
+
+<h3 id="64场景d小改直接动代码跳过prd" class="font-bold mb-3 mt-6 text-xl">6.4 场景 D:小改直接动代码(跳过 PRD)</h3>
+
+<li class="ml-4 mb-1">纯视觉/文案微调,不影响业务定义</li>
+<li class="ml-4 mb-1">直接改代码 + 写 CHANGELOG 补丁 + 提示刷新浏览器</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">不改 PRD</strong></li>
+
+<h3 id="65通用硬性要求任何场景都遵守" class="font-bold mb-3 mt-6 text-xl">6.5 通用硬性要求(任何场景都遵守)</h3>
+
+<li class="ml-4 mb-1">把每条反馈记录到 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/<产品名>/CHANGELOG.md</code></li>
+<li class="ml-4 mb-1"><strong class="font-semibold">PRD / 代码 / CHANGELOG 三件套一起更新</strong>,不脱节</li>
+<li class="ml-4 mb-1">基于现有 Demo 增量修改(场景 C 除外,可整页重写)</li>
+<li class="ml-4 mb-1">保持数据兼容:字段重命名加兼容映射,字段删除要容错,字段新增给默认值</li>
+<li class="ml-4 mb-1">任何破坏性变更在 CHANGELOG 顶部标 ⚠️ Breaking</li>
+
+<p class="mb-3 text-sm leading-relaxed">判定流程、反模式、完整示例见 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/iteration-patterns.md</code>。</p>
+
+<h2 id="7引用文件速查表" class="font-bold mb-3 mt-6 text-2xl">7. 引用文件速查表</h2>
+
+<p class="mb-3 text-sm leading-relaxed">Skill 工作时按需读这些参考:</p>
+
+
+<h2 id="8内置的3个参考demo" class="font-bold mb-3 mt-6 text-2xl">8. 内置的 3 个参考 Demo</h2>
+
+<p class="mb-3 text-sm leading-relaxed">在 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/</code> 下,Skill 已经准备了 3 个完整可用的 Demo,作为参照基线:</p>
+
+<li class="ml-4 mb-1"><code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-sales-visit-recorder/</code> — 销售拜访纪要(单实体 + 看板)</li>
+<li class="ml-4 mb-1"><code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-hr-recruitment/</code> — HR 招聘后台(多实体:招聘需求 / 候选人 / 面试 / 入职)</li>
+<li class="ml-4 mb-1"><code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">outputs/demo-meeting-notes/</code> — 会议纪要管理(多实体:会议 / 行动项 / 看板)</li>
+
+<p class="mb-3 text-sm leading-relaxed">学员第一周可以直接打开这 3 个 Demo 试玩,然后基于自己的业务开始做新 Demo。</p>
+
+<h2 id="9常见错误与避坑" class="font-bold mb-3 mt-6 text-2xl">9. 常见错误与避坑</h2>
+
+<li class="ml-4 mb-1"><strong class="font-semibold">跳过阶段一直接做 PRD</strong>:必失败,用户会被 PRD 拒掉。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">PRD 写到对话里</strong>:必须写文件,用户要能分享。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">Demo 写完不告诉用户怎么用</strong>:必须给完整路径 + 启动说明。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">CRUD 是空架子(按钮在,提交没反应)</strong>:用 <code class="bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-xs font-mono text-rose-600 dark:text-rose-300">references/crud-pattern.md</code> 反复对照。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">主导航放右侧</strong>:用户已明确要求左侧。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">生成 emoji 当图标</strong>:用 lucide。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">忘记 dark mode</strong>:必须双主题。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">忘记 localStorage</strong>:刷新数据全丢,用户会放弃使用。</li>
+<li class="ml-4 mb-1"><strong class="font-semibold">忘记移动端适配</strong>:移动端用户要能用。</li>
+
+
+    </div>
+  </div>
+
+  <div class="border-t border-slate-200 dark:border-slate-700 mt-12">
+    <div class="max-w-4xl mx-auto px-6 py-4 flex justify-between items-center text-sm">
+      <div><span class="opacity-30">已是第一篇</span></div><div><a href="readme.html" class="flex items-center gap-1 text-blue-500 hover:text-blue-600">README.md · 快速开始<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></a></div>
+    </div>
+  </div>
+
+  <script>
+    try {
+      const t = localStorage.getItem('md-theme');
+      if (t === 'dark' || (t === null && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  </script>
+</body>
+</html>
